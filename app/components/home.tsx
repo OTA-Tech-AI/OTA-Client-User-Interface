@@ -16,6 +16,7 @@ import { Path, SlotID } from "../constant";
 import { ErrorBoundary } from "./error";
 
 import { getISOLang, getLang } from "../locales";
+import { initializeFirebase } from "../firebase";
 
 import {
   HashRouter as Router,
@@ -26,6 +27,7 @@ import {
 import { SideBar } from "./sidebar";
 import { useAppConfig } from "../store/config";
 import { AuthPage } from "./auth";
+import { LoginPage } from "./login";
 import { getClientConfig } from "../config/client";
 import { api } from "../client/api";
 import { useAccessStore } from "../store";
@@ -126,9 +128,11 @@ function Screen() {
   const config = useAppConfig();
   const location = useLocation();
   const isHome = location.pathname === Path.Home;
-  const isAuth = location.pathname === Path.Auth;
+  //   const isAuth = location.pathname === Path.Auth;
+  const isLogin = location.pathname === Path.Login;
   const isMobileScreen = useMobileScreen();
-  const shouldTightBorder = getClientConfig()?.isApp || (config.tightBorder && !isMobileScreen);
+  const shouldTightBorder =
+    getClientConfig()?.isApp || (config.tightBorder && !isMobileScreen);
 
   useEffect(() => {
     loadAsyncGoogleFont();
@@ -143,9 +147,10 @@ function Screen() {
         }`
       }
     >
-      {isAuth ? (
+      {isLogin ? (
         <>
-          <AuthPage />
+          {/* <AuthPage /> */}
+          <LoginPage />
         </>
       ) : (
         <>
@@ -182,6 +187,7 @@ export function Home() {
   useSwitchTheme();
   useLoadData();
   useHtmlLang();
+  initializeFirebase();
 
   useEffect(() => {
     console.log("[Config] got config from build time", getClientConfig());

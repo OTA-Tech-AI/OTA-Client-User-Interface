@@ -20,6 +20,24 @@
     font-size: 14px;
   }
 
+//   .auth-error {
+// 	color: red;
+// 	background-color: #ffe0e0;
+// 	padding: 10px;
+// 	border-radius: 4px;
+// 	margin-bottom: 10px;
+//   }
+
+.auth-error {
+	color: #ff5555;  // Light red text for better contrast on dark background
+	background-color: #2c2c2c;  // Dark background color
+	padding: 10px;
+	border-radius: 4px;
+	margin-top: 20px;  // Increased top margin
+	margin-bottom: 10px;
+	border: 1px solid #ff5555;  // Light red border
+  }
+
   .auth-input {
     margin: 3vh 0;
   }

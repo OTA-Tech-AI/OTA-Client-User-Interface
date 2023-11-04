@@ -135,7 +135,7 @@ export function Modal(props: ModalProps) {
             className={styles["modal-header-action"]}
             onClick={() => setMax(!isMax)}
           >
-            {isMax ? <MinIcon /> : <MaxIcon />}
+            {/* {isMax ? <MinIcon /> : <MaxIcon />} */}
           </div>
           <div
             className={styles["modal-header-action"]}

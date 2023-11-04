@@ -5,11 +5,12 @@ import styles from "./home.module.scss";
 import { IconButton } from "./button";
 import SettingsIcon from "../icons/settings.svg";
 import GithubIcon from "../icons/github.svg";
+import UserIcon from "../icons/user.svg";
 import ChatGptIcon from "../icons/chatgpt.svg";
 import AddIcon from "../icons/add.svg";
 import CloseIcon from "../icons/close.svg";
-import MaskIcon from "../icons/mask.svg";
-import PluginIcon from "../icons/plugin.svg";
+// import MaskIcon from "../icons/mask.svg";
+// import PluginIcon from "../icons/plugin.svg";
 import DragIcon from "../icons/drag.svg";
 
 import Locale from "../locales";
@@ -29,6 +30,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useMobileScreen } from "../utils";
 import dynamic from "next/dynamic";
 import { showConfirm, showToast } from "./ui-lib";
+import { getAuth } from "firebase/auth";
 
 const ChatList = dynamic(async () => (await import("./chat-list")).ChatList, {
   loading: () => null,
@@ -135,6 +137,13 @@ export function SideBar(props: { className?: string }) {
   const navigate = useNavigate();
   const config = useAppConfig();
 
+  const auth = getAuth();
+  const user = auth.currentUser;
+  let userNameDisplay = "";
+  if (user && user.email) {
+    userNameDisplay = user.email.toUpperCase().slice(0, 3);
+  }
+
   useHotKey();
 
   return (
@@ -145,17 +154,17 @@ export function SideBar(props: { className?: string }) {
     >
       <div className={styles["sidebar-header"]} data-tauri-drag-region>
         <div className={styles["sidebar-title"]} data-tauri-drag-region>
-          ChatGPT Next
+          OTA
         </div>
         <div className={styles["sidebar-sub-title"]}>
-          Build your own AI assistant.
+          Your own AI assistant.
         </div>
-        <div className={styles["sidebar-logo"] + " no-dark"}>
+        {/* <div className={styles["sidebar-logo"] + " no-dark"}>
           <ChatGptIcon />
-        </div>
+        </div> */}
       </div>
 
-      <div className={styles["sidebar-header-bar"]}>
+      {/* <div className={styles["sidebar-header-bar"]}>
         <IconButton
           icon={<MaskIcon />}
           text={shouldNarrow ? undefined : Locale.Mask.Name}
@@ -176,7 +185,7 @@ export function SideBar(props: { className?: string }) {
           onClick={() => showToast(Locale.WIP)}
           shadow
         />
-      </div>
+      </div> */}
 
       <div
         className={styles["sidebar-body"]}
@@ -206,10 +215,22 @@ export function SideBar(props: { className?: string }) {
               <IconButton icon={<SettingsIcon />} shadow />
             </Link>
           </div>
-          <div className={styles["sidebar-action"]}>
-            <a href={REPO_URL} target="_blank" rel="noopener noreferrer">
+          {/* <div className={styles["sidebar-action"]}>
+		  	<Link to={Path.Login}>
               <IconButton icon={<GithubIcon />} shadow />
-            </a>
+			  </Link>
+          </
+		  div> */}
+          <div className={styles["sidebar-action"]}>
+            {user ? (
+              <Link to={Path.Login}>
+                <IconButton icon={<UserIcon />} text={userNameDisplay} shadow />
+              </Link>
+            ) : (
+              <Link to={Path.Login}>
+                <IconButton icon={<UserIcon />} shadow />
+              </Link>
+            )}
           </div>
         </div>
         <div>

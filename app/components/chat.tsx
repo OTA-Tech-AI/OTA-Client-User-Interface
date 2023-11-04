@@ -486,19 +486,22 @@ export function ChatActions(props: {
         icon={<PromptIcon />}
       />
 
-      <ChatAction
+      {/* <ChatAction
         onClick={() => {
           navigate(Path.Masks);
         }}
         text={Locale.Chat.InputActions.Masks}
         icon={<MaskIcon />}
-      />
+      /> */}
 
       <ChatAction
         text={Locale.Chat.InputActions.Clear}
         icon={<BreakIcon />}
         onClick={() => {
           chatStore.updateCurrentSession((session) => {
+            console.log("session.clearContextIndex", session.clearContextIndex);
+            console.log("session.messages.length", session.messages.length);
+            console.log("session.memoryPrompt", session.memoryPrompt);
             if (session.clearContextIndex === session.messages.length) {
               session.clearContextIndex = undefined;
             } else {
@@ -509,11 +512,11 @@ export function ChatActions(props: {
         }}
       />
 
-      <ChatAction
+      {/* <ChatAction
         onClick={() => setShowModelSelector(true)}
         text={currentModel}
         icon={<RobotIcon />}
-      />
+      /> */}
 
       {showModelSelector && (
         <Selector
@@ -548,14 +551,14 @@ export function EditMessageModal(props: { onClose: () => void }) {
         title={Locale.Chat.EditMessage.Title}
         onClose={props.onClose}
         actions={[
-          <IconButton
-            text={Locale.UI.Cancel}
-            icon={<CancelIcon />}
-            key="cancel"
-            onClick={() => {
-              props.onClose();
-            }}
-          />,
+          //   <IconButton
+          //     text={Locale.UI.Cancel}
+          //     icon={<CancelIcon />}
+          //     key="cancel"
+          //     onClick={() => {
+          //       props.onClose();
+          //     }}
+          //   />,
           <IconButton
             type="primary"
             text={Locale.UI.Confirm}
@@ -586,14 +589,14 @@ export function EditMessageModal(props: { onClose: () => void }) {
             ></input>
           </ListItem>
         </List>
-        <ContextPrompts
+        {/* <ContextPrompts
           context={messages}
           updateContext={(updater) => {
             const newMessages = messages.slice();
             updater(newMessages);
             setMessages(newMessages);
           }}
-        />
+        /> */}
       </Modal>
     </div>
   );
@@ -1132,7 +1135,7 @@ function _Chat() {
                 <div className={styles["chat-message-container"]}>
                   <div className={styles["chat-message-header"]}>
                     <div className={styles["chat-message-avatar"]}>
-                      <div className={styles["chat-message-edit"]}>
+                      {/* <div className={styles["chat-message-edit"]}>
                         <IconButton
                           icon={<EditIcon />}
                           onClick={async () => {
@@ -1151,7 +1154,7 @@ function _Chat() {
                             });
                           }}
                         ></IconButton>
-                      </div>
+                      </div> */}
                       {isUser ? (
                         <Avatar avatar={config.avatar} />
                       ) : (
@@ -1176,23 +1179,23 @@ function _Chat() {
                             />
                           ) : (
                             <>
-                              <ChatAction
+                              {/* <ChatAction
                                 text={Locale.Chat.Actions.Retry}
                                 icon={<ResetIcon />}
                                 onClick={() => onResend(message)}
-                              />
+                              /> */}
 
-                              <ChatAction
+                              {/* <ChatAction
                                 text={Locale.Chat.Actions.Delete}
                                 icon={<DeleteIcon />}
                                 onClick={() => onDelete(message.id ?? i)}
-                              />
+                              /> */}
 
-                              <ChatAction
+                              {/* <ChatAction
                                 text={Locale.Chat.Actions.Pin}
                                 icon={<PinIcon />}
                                 onClick={() => onPinMessage(message)}
-                              />
+                              /> */}
                               <ChatAction
                                 text={Locale.Chat.Actions.Copy}
                                 icon={<CopyIcon />}
