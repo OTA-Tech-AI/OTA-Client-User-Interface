@@ -26,8 +26,8 @@ import {
 } from "react-router-dom";
 import { SideBar } from "./sidebar";
 import { useAppConfig } from "../store/config";
-import { AuthPage } from "./auth";
 import { LoginPage } from "./login";
+import { UserPage } from "./user/userPage";
 import { getClientConfig } from "../config/client";
 import { api } from "../client/api";
 import { useAccessStore } from "../store";
@@ -125,11 +125,18 @@ const loadAsyncGoogleFont = () => {
 };
 
 function Screen() {
+  enum AppState {
+    LOGIN = "LOGIN",
+    HOME = "HOME",
+    CHAT = "CHAT",
+    USERPAGE = "USERPAGE",
+  }
   const config = useAppConfig();
   const location = useLocation();
   const isHome = location.pathname === Path.Home;
   //   const isAuth = location.pathname === Path.Auth;
   const isLogin = location.pathname === Path.Login;
+  const isUserPage = location.pathname === Path.UserPage;
   const isMobileScreen = useMobileScreen();
   const shouldTightBorder =
     getClientConfig()?.isApp || (config.tightBorder && !isMobileScreen);
@@ -137,6 +144,13 @@ function Screen() {
   useEffect(() => {
     loadAsyncGoogleFont();
   }, []);
+
+  let currentAppState = AppState.HOME;
+  if (isLogin) {
+    currentAppState = AppState.LOGIN;
+  } else if (isUserPage) {
+    currentAppState = AppState.USERPAGE;
+  }
 
   return (
     <div
@@ -147,28 +161,67 @@ function Screen() {
         }`
       }
     >
-      {isLogin ? (
-        <>
-          {/* <AuthPage /> */}
-          <LoginPage />
-        </>
-      ) : (
-        <>
-          <SideBar className={isHome ? styles["sidebar-show"] : ""} />
+      {(() => {
+        switch (currentAppState) {
+          case AppState.LOGIN:
+            return <LoginPage />;
+          case AppState.HOME:
+            return (
+              <>
+                <SideBar className={isHome ? styles["sidebar-show"] : ""} />
 
-          <div className={styles["window-content"]} id={SlotID.AppBody}>
-            <Routes>
-              <Route path={Path.Home} element={<Chat />} />
-              <Route path={Path.NewChat} element={<NewChat />} />
-              <Route path={Path.Masks} element={<MaskPage />} />
-              <Route path={Path.Chat} element={<Chat />} />
-              <Route path={Path.Settings} element={<Settings />} />
-            </Routes>
-          </div>
-        </>
-      )}
+                <div className={styles["window-content"]} id={SlotID.AppBody}>
+                  <Routes>
+                    <Route path={Path.Home} element={<Chat />} />
+                    <Route path={Path.NewChat} element={<NewChat />} />
+                    <Route path={Path.Masks} element={<MaskPage />} />
+                    <Route path={Path.Chat} element={<Chat />} />
+                    <Route path={Path.Settings} element={<Settings />} />
+                  </Routes>
+                </div>
+              </>
+            );
+          case AppState.USERPAGE:
+            return <UserPage />;
+          // ... Handle more cases as needed
+          default:
+            return null;
+        }
+      })()}
     </div>
   );
+
+  //   return (
+  //     <div
+  //       className={
+  //         styles.container +
+  //         ` ${shouldTightBorder ? styles["tight-container"] : styles.container} ${
+  //           getLang() === "ar" ? styles["rtl-screen"] : ""
+  //         }`
+  //       }
+  //     >
+  //       {isLogin ? (
+  //         <>
+  //           {/* <AuthPage /> */}
+  //           <LoginPage />
+  //         </>
+  //       ) : (
+  // <>
+  //   <SideBar className={isHome ? styles["sidebar-show"] : ""} />
+
+  //   <div className={styles["window-content"]} id={SlotID.AppBody}>
+  //     <Routes>
+  //       <Route path={Path.Home} element={<Chat />} />
+  //       <Route path={Path.NewChat} element={<NewChat />} />
+  //       <Route path={Path.Masks} element={<MaskPage />} />
+  //       <Route path={Path.Chat} element={<Chat />} />
+  //       <Route path={Path.Settings} element={<Settings />} />
+  //     </Routes>
+  //   </div>
+  // </>
+  //       )}
+  //     </div>
+  //   );
 }
 
 export function useLoadData() {

@@ -1,0 +1,65 @@
+.user-page {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 100%;
+	width: calc(100% - 40px);  // Adjusted width to accommodate padding
+	padding: 0 20px;  // Added padding on left and right
+	flex-direction: column;
+  
+	.user-email,
+	.go-back-button,
+	.devices-table,
+	.sign-out-button {
+	  margin-left: auto;  // Ensure alignment is consistent on the left side
+	  margin-right: auto;  // Ensure alignment is consistent on the right side
+	  width: calc(100% - 40px);  // Adjusted width to accommodate margin
+	}
+  
+	.user-email {
+	  align-self: flex-start;
+	  font-size: 20px;
+	  font-weight: bold;
+	  margin-bottom: 20px;
+	}
+  
+	.go-back-button {
+	  align-self: flex-start;
+	  margin-bottom: 20px;
+	}
+	
+	.devices-table {
+	  width: 100%;
+	  margin-bottom: 20px;
+	  
+	  table {
+		width: 100%;
+		border-collapse: collapse;
+		font-size: 16px;
+  
+		th, td {
+		  padding: 10px;
+		  text-align: left;
+		  border-bottom: 1px solid #ddd;
+		}
+  
+		tr:hover {
+		  background-color: #13007d;  // Light hover effect for rows
+		}
+	  }
+	}
+  
+	.sign-out-button {
+	  align-self: flex-end;
+	  padding: 10px;
+	  color: #fff;  // White text color
+	  border: none;
+	  border-radius: 4px;
+	  cursor: pointer;
+  
+	  &:hover {
+		background-color: #555;  // Slightly lighter background on hover
+	  }
+	}
+  }
+  

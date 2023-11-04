@@ -19,8 +19,8 @@ export function LoginPage() {
   const goHome = () => navigate(Path.Home);
   const goChat = () => navigate(Path.Chat);
   const resetAccessCode = () => {
-    access.updateCode("");
-    access.updateToken("");
+    access.updateEmail("");
+    access.updatePassword("");
   }; // Reset
 
   const handleLogin = async () => {
@@ -31,7 +31,6 @@ export function LoginPage() {
       goChat();
     } catch (err) {
       setError("Sign-in Failed. Please check your email and password.");
-      //   console.error(err);
     }
   };
 
@@ -39,49 +38,55 @@ export function LoginPage() {
     if (getClientConfig()?.isApp) {
       navigate(Path.Settings);
     }
+    if (isLoggedIn) {
+      navigate(Path.UserPage);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const isLoggedIn = access.isAuthorized();
   return (
-    <div className={styles["auth-page"]}>
-      <div className={`no-dark ${styles["auth-logo"]}`}>
-        <BotIcon />
-      </div>
+    <>
+      <div className={styles["auth-page"]}>
+        <div className={`no-dark ${styles["auth-logo"]}`}>
+          <BotIcon />
+        </div>
 
-      <div className={styles["auth-title"]}>Sign in</div>
-      <div className={styles["auth-tips"]}>Use your Email</div>
-      {error && <div className={styles["auth-error"]}>{error}</div>}
+        <div className={styles["auth-title"]}>Sign in</div>
+        <div className={styles["auth-tips"]}>Use your Email</div>
+        {error && <div className={styles["auth-error"]}>{error}</div>}
 
-      <input
-        className={styles["auth-input"]}
-        placeholder="email"
-        value={access.email}
-        onChange={(e) => {
-          access.updateCode(e.currentTarget.value);
-        }}
-      />
-
-      <div className={styles["auth-tips"]}>Password</div>
-      <input
-        className={styles["auth-input"]}
-        type="password"
-        placeholder="password"
-        value={access.password}
-        onChange={(e) => {
-          access.updateToken(e.currentTarget.value);
-        }}
-      />
-
-      <div className={styles["auth-actions"]}>
-        <IconButton text="Sign in" type="primary" onClick={handleLogin} />
-        <IconButton
-          text={Locale.Auth.Later}
-          onClick={() => {
-            resetAccessCode();
-            goHome();
+        <input
+          className={styles["auth-input"]}
+          placeholder="email"
+          value={access.email}
+          onChange={(e) => {
+            access.updateEmail(e.currentTarget.value);
           }}
         />
+
+        <div className={styles["auth-tips"]}>Password</div>
+        <input
+          className={styles["auth-input"]}
+          type="password"
+          placeholder="password"
+          value={access.password}
+          onChange={(e) => {
+            access.updatePassword(e.currentTarget.value);
+          }}
+        />
+
+        <div className={styles["auth-actions"]}>
+          <IconButton text="Sign in" type="primary" onClick={handleLogin} />
+          <IconButton
+            text={Locale.Auth.Later}
+            onClick={() => {
+              resetAccessCode();
+              goHome();
+            }}
+          />
+        </div>
       </div>
-    </div>
+    </>
   );
 }

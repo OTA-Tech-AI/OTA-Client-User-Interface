@@ -19,6 +19,7 @@ export enum Path {
   Masks = "/masks",
   Auth = "/auth",
   Login = "/login",
+  UserPage = "/user",
 }
 
 export enum ApiPath {

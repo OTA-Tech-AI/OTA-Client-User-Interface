@@ -223,7 +223,7 @@ export function SideBar(props: { className?: string }) {
 		  div> */}
           <div className={styles["sidebar-action"]}>
             {user ? (
-              <Link to={Path.Login}>
+              <Link to={Path.UserPage}>
                 <IconButton icon={<UserIcon />} text={userNameDisplay} shadow />
               </Link>
             ) : (
