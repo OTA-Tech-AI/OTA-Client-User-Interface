@@ -347,7 +347,7 @@ export const useChatStore = createPersistStore(
         // get recent messages
         const recentMessages = get().getMessagesWithMemory();
         // const sendMessages = recentMessages.concat(userMessage);
-        const chatMode = false;
+        const chatMode = modelConfig.model !== "OTA_ACTION";
         let sendMessages = [userMessage];
         if (chatMode) {
           sendMessages = recentMessages.concat(userMessage);

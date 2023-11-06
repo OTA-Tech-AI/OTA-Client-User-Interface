@@ -157,11 +157,11 @@ export function SideBar(props: { className?: string }) {
           OTA
         </div>
         <div className={styles["sidebar-sub-title"]}>
-          Your own AI assistant.
+          First AI Interact with World.
         </div>
-        {/* <div className={styles["sidebar-logo"] + " no-dark"}>
+        <div className={styles["sidebar-logo"] + " no-dark"}>
           <ChatGptIcon />
-        </div> */}
+        </div>
       </div>
 
       {/* <div className={styles["sidebar-header-bar"]}>
@@ -177,8 +177,8 @@ export function SideBar(props: { className?: string }) {
             }
           }}
           shadow
-        />
-        <IconButton
+        /> */}
+      {/* <IconButton
           icon={<PluginIcon />}
           text={shouldNarrow ? undefined : Locale.Plugin.Name}
           className={styles["sidebar-bar-button"]}

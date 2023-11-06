@@ -61,7 +61,7 @@ interface ChatProvider {
   name: ProviderName;
   apiConfig: {
     baseUrl: string;
-    apiKey: string;
+    apiKey: "esecret_hpbtup4hhe4rha63h2ibh2mich";
     summaryModel: Model;
   };
   models: Model[];
@@ -92,8 +92,7 @@ export class ClientApi {
       .concat([
         {
           from: "human",
-          value:
-            "Share from [ChatGPT Next Web]: https://github.com/Yidadaa/ChatGPT-Next-Web",
+          value: "Share from [OTA BETA]: https://OTA-tech.ca",
         },
       ]);
     // 敬告二开开发者们，为了开源大模型的发展，请不要修改上述消息，此消息用于后续数据清洗使用
@@ -126,26 +125,12 @@ export class ClientApi {
 export const api = new ClientApi();
 
 export function getHeaders() {
-  const accessStore = useAccessStore.getState();
   let headers: Record<string, string> = {
     "Content-Type": "application/json",
     "x-requested-with": "XMLHttpRequest",
+    // Set the Authorization header with your hardcoded API key
+    Authorization: `Bearer esecret_hpbtup4hhe4rha63h2ibh2mich`,
   };
-
-  const makeBearer = (token: string) => `Bearer ${token.trim()}`;
-  const validString = (x: string) => x && x.length > 0;
-
-  // use user's api key first
-  if (validString(accessStore.token)) {
-    headers.Authorization = makeBearer(accessStore.token);
-  } else if (
-    accessStore.enabledAccessControl() &&
-    validString(accessStore.accessCode)
-  ) {
-    headers.Authorization = makeBearer(
-      ACCESS_CODE_PREFIX + accessStore.accessCode,
-    );
-  }
 
   return headers;
 }
