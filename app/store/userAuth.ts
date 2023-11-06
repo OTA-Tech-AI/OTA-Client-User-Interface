@@ -19,7 +19,7 @@ const DEFAULT_ACCESS_STATE = {
   needCode: true,
   hideUserApiKey: false,
   hideBalanceQuery: false,
-
+  uid: "",
   openaiUrl: DEFAULT_OPENAI_URL,
 };
 
@@ -29,8 +29,13 @@ export const userAuthStore = createPersistStore(
   (set, get) => ({
     async signInWithFirebase(email: string, password: string) {
       try {
-        const auth = getAuth();
+        let auth = getAuth();
         await signInWithEmailAndPassword(auth, email, password);
+        auth = getAuth();
+        if (!!auth.currentUser && !!auth.currentUser.uid) {
+          set(() => ({ uid: auth.currentUser?.uid }));
+        }
+
         console.log(
           "[Auth] user sign in with Firebase successfully, email: ",
           get().email,
@@ -47,7 +52,7 @@ export const userAuthStore = createPersistStore(
         const auth = getAuth();
         await signOut(auth);
         // User signed out successfully
-        set(() => ({ email: "", password: "" }));
+        set(() => ({ email: "", password: "", uid: "" }));
         console.log("[Auth] Signed out successfully, email: ", get().email);
         // Clear local state if necessary
         set({ ...DEFAULT_ACCESS_STATE });

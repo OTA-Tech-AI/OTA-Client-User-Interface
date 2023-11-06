@@ -308,7 +308,12 @@ export const useChatStore = createPersistStore(
 
         // get recent messages
         const recentMessages = get().getMessagesWithMemory();
-        const sendMessages = recentMessages.concat(userMessage);
+        // const sendMessages = recentMessages.concat(userMessage);
+        const chatMode = false;
+        let sendMessages = [userMessage];
+        if (chatMode) {
+          sendMessages = recentMessages.concat(userMessage);
+        }
         const messageIndex = get().currentSession().messages.length + 1;
 
         // save user's and bot's message
@@ -326,7 +331,8 @@ export const useChatStore = createPersistStore(
         // make request
         api.llm.chat({
           messages: sendMessages,
-          config: { ...modelConfig, stream: true },
+          //   config: { ...modelConfig, stream: true },
+          config: { ...modelConfig, stream: false },
           onUpdate(message) {
             botMessage.streaming = true;
             if (message) {

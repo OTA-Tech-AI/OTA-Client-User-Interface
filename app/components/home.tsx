@@ -16,7 +16,12 @@ import { Path, SlotID } from "../constant";
 import { ErrorBoundary } from "./error";
 
 import { getISOLang, getLang } from "../locales";
-import { initializeFirebase } from "../firebase";
+import {
+  initializeFirebase,
+  listenForChildAdded,
+  listenForChildChanged,
+  listenForChildRemoved,
+} from "../firebase-helper";
 
 import {
   HashRouter as Router,
@@ -31,6 +36,7 @@ import { UserPage } from "./user/userPage";
 import { getClientConfig } from "../config/client";
 import { api } from "../client/api";
 import { useAccessStore } from "../store";
+import { userAuthStore } from "../store/userAuth";
 
 export function Loading(props: { noLogo?: boolean }) {
   return (
@@ -183,6 +189,7 @@ function Screen() {
             );
           case AppState.USERPAGE:
             return <UserPage />;
+          // return <div></div>
           // ... Handle more cases as needed
           default:
             return null;
@@ -236,11 +243,39 @@ export function useLoadData() {
   }, []);
 }
 
+function firebaseInitialization() {
+  initializeFirebase();
+  const userPath = "user_" + userAuthStore.getState().uid;
+
+  // Define your callback for child added
+  const handleChildAdded = (snapshot: any, prevChildKey?: string | null) => {
+    console.log("Child added:", snapshot.key, snapshot.val(), prevChildKey);
+    // Handle the new child data here...
+  };
+
+  // Define your callback for child changed
+  const handleChildChanged = (snapshot: any) => {
+    console.log("Child changed:", snapshot.key, snapshot.val());
+    // Handle the updated child data here...
+  };
+
+  // Define your callback for child removed
+  const handleChildRemoved = (snapshot: any) => {
+    console.log("Child removed:", snapshot.key);
+    // Handle the child removal here...
+  };
+
+  // Setting up the listeners
+  // listenForChildAdded(userPath, handleChildAdded);
+  // listenForChildChanged(userPath, handleChildChanged);
+  // listenForChildRemoved(userPath, handleChildRemoved);
+}
+
 export function Home() {
   useSwitchTheme();
   useLoadData();
   useHtmlLang();
-  initializeFirebase();
+  firebaseInitialization();
 
   useEffect(() => {
     console.log("[Config] got config from build time", getClientConfig());

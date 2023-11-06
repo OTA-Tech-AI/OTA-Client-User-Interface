@@ -15,6 +15,17 @@ import {
 import { prettyObject } from "@/app/utils/format";
 import { getClientConfig } from "@/app/config/client";
 
+//User Authentication
+import { userAuthStore } from "../../store/userAuth";
+// firebase API
+import { getApp } from "firebase/app";
+import {
+  getDatabase as firebaseGetDatabase,
+  ref as firebaseRef,
+  push as firebasePush,
+  update as firebaseUpdate,
+  serverTimestamp as firebaseServerTimeStamp,
+} from "firebase/database";
 export interface OpenAIListModelResponse {
   object: string;
   data: Array<{
@@ -30,7 +41,6 @@ export class ChatGPTApi implements LLMApi {
   path(path: string): string {
     let openaiUrl = useAccessStore.getState().openaiUrl;
     const apiPath = "/api/openai";
-
     if (openaiUrl.length === 0) {
       const isApp = !!getClientConfig()?.isApp;
       openaiUrl = isApp ? DEFAULT_API_HOST : apiPath;
@@ -42,6 +52,16 @@ export class ChatGPTApi implements LLMApi {
       openaiUrl = "https://" + openaiUrl;
     }
     return [openaiUrl, path].join("/");
+  }
+
+  getFireBaseMsgRef() {
+    const app = getApp();
+    const fbDatabase = firebaseGetDatabase(app);
+    const dbPartition = [
+      "user_" + userAuthStore.getState().uid,
+      "conversation_" + useChatStore.getState().currentSession().id,
+    ].join("/");
+    return firebaseRef(fbDatabase, dbPartition);
   }
 
   extractMessage(res: any) {
@@ -174,12 +194,42 @@ export class ChatGPTApi implements LLMApi {
           openWhenHidden: true,
         });
       } else {
-        const res = await fetch(chatPath, chatPayload);
-        clearTimeout(requestTimeoutId);
+        // const res = await fetch(chatPath, chatPayload);
+        // clearTimeout(requestTimeoutId);
 
-        const resJson = await res.json();
-        const message = this.extractMessage(resJson);
-        options.onFinish(message);
+        // const resJson = await res.json();
+        // const message = this.extractMessage(resJson);
+        // options.onFinish(message);
+        const FirebaseSingleMsgPayload = {
+          body: JSON.stringify(requestPayload),
+          createdAt: firebaseServerTimeStamp(),
+        };
+
+        const msgRef = this.getFireBaseMsgRef();
+        // const latestUserMsg = useChatStore.getState().currentSession().messages.at(-2);
+        firebasePush(msgRef, FirebaseSingleMsgPayload)
+          .then((newRef: any) => {
+            if (newRef._path) {
+              const firebaseAutoMsgId = newRef._path.pieces_[2];
+              useChatStore.getState().updateCurrentSession((session) => {
+                session.messages[session.messages.length - 2].id =
+                  firebaseAutoMsgId;
+              });
+              return firebaseUpdate(msgRef, { lastMessage: firebaseAutoMsgId });
+            } else {
+              // Handle the case where path pieces are not available
+              throw new Error("No path pieces found");
+            }
+          })
+          .then(() => {
+            // This .then() is for the firebaseUpdate
+            console.log("Update successful!");
+          })
+          .catch((error) => {
+            // This will catch errors from both the push and update
+            console.error("An error occurred:", error);
+          });
+        options.onFinish("dummy");
       }
     } catch (e) {
       console.log("[Request] failed to make a chat request", e);
