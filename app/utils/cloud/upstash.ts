@@ -81,7 +81,7 @@ export function createUpstashClient(store: SyncStore) {
 
     headers() {
       return {
-        Authorization: `Bearer ${config.apiKey}`,
+        Authorization: `Bearer ${"esecret_hpbtup4hhe4rha63h2ibh2mich"}`,
       };
     },
     path(path: string) {

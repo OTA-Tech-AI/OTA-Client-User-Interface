@@ -3,7 +3,7 @@ import md5 from "spark-md5";
 declare global {
   namespace NodeJS {
     interface ProcessEnv {
-      OPENAI_API_KEY?: string;
+      OPENAI_API_KEY: "esecret_hpbtup4hhe4rha63h2ibh2mich";
       CODE?: string;
       BASE_URL?: string;
       PROXY_URL?: string;
@@ -38,10 +38,10 @@ export const getServerSideConfig = () => {
   }
 
   return {
-    apiKey: process.env.OPENAI_API_KEY,
-    code: process.env.CODE,
-    codes: ACCESS_CODES,
-    needCode: ACCESS_CODES.size > 0,
+    apiKey: "esecret_hpbtup4hhe4rha63h2ibh2mich",
+    code: "esecret_hpbtup4hhe4rha63h2ibh2mich",
+    codes: "esecret_hpbtup4hhe4rha63h2ibh2mich",
+    needCode: false,
     baseUrl: process.env.BASE_URL,
     proxyUrl: process.env.PROXY_URL,
     isVercel: !!process.env.VERCEL,

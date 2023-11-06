@@ -13,10 +13,6 @@ export type ModelType = (typeof DEFAULT_MODELS)[number]["name"];
 
 export enum SubmitKey {
   Enter = "Enter",
-  CtrlEnter = "Ctrl + Enter",
-  ShiftEnter = "Shift + Enter",
-  AltEnter = "Alt + Enter",
-  MetaEnter = "Meta + Enter",
 }
 
 export enum Theme {
@@ -28,25 +24,26 @@ export enum Theme {
 export const DEFAULT_CONFIG = {
   lastUpdate: Date.now(), // timestamp, to merge state
 
-  submitKey: isMacOS() ? SubmitKey.MetaEnter : SubmitKey.CtrlEnter,
+  submitKey: isMacOS() ? SubmitKey.MetaEnter : SubmitKey.Enter,
   avatar: "1f603",
   fontSize: 14,
   theme: Theme.Auto as Theme,
   tightBorder: !!getClientConfig()?.isApp,
   sendPreviewBubble: true,
-  enableAutoGenerateTitle: true,
+  enableAutoGenerateTitle: false,
   sidebarWidth: DEFAULT_SIDEBAR_WIDTH,
 
   disablePromptHint: false,
 
-  dontShowMaskSplashScreen: false, // dont show splash screen when create chat
-  hideBuiltinMasks: false, // dont add builtin masks
+  dontShowMaskSplashScreen: true, // dont show splash screen when create chat
+  hideBuiltinMasks: true, // dont add builtin masks
 
   customModels: "",
   models: DEFAULT_MODELS as any as LLMModel[],
+  apiKey: "esecret_hpbtup4hhe4rha63h2ibh2mich",
 
   modelConfig: {
-    model: "gpt-3.5-turbo" as ModelType,
+    model: "meta-llama/Llama-2-70b-chat-hf" as ModelType,
     temperature: 0.5,
     top_p: 1,
     max_tokens: 2000,
@@ -55,7 +52,7 @@ export const DEFAULT_CONFIG = {
     sendMemory: true,
     historyMessageCount: 4,
     compressMessageLengthThreshold: 1000,
-    enableInjectSystemPrompts: true,
+    enableInjectSystemPrompts: false,
     template: DEFAULT_INPUT_TEMPLATE,
   },
 };

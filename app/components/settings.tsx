@@ -444,7 +444,8 @@ function SyncConfigModal(props: { onClose?: () => void }) {
                 value={syncStore.upstash.apiKey}
                 onChange={(e) => {
                   syncStore.update(
-                    (config) => (config.upstash.apiKey = e.currentTarget.value),
+                    (config) =>
+                      (config.upstash.apiKey = "e.currentTarget.value"),
                   );
                 }}
               ></PasswordInput>
@@ -672,15 +673,15 @@ export function Settings() {
 
           <ListItem
             title={Locale.Settings.Update.Version(currentVersion ?? "unknown")}
-            subTitle={
-              checkingUpdate
-                ? Locale.Settings.Update.IsChecking
-                : hasNewVersion
-                ? Locale.Settings.Update.FoundUpdate(remoteId ?? "ERROR")
-                : Locale.Settings.Update.IsLatest
-            }
+            // subTitle={
+            //   checkingUpdate
+            //     ? Locale.Settings.Update.IsChecking
+            //     : hasNewVersion
+            //     ? Locale.Settings.Update.FoundUpdate(remoteId ?? "ERROR")
+            //     : Locale.Settings.Update.IsLatest
+            // }
           >
-            {checkingUpdate ? (
+            {/* {checkingUpdate ? (
               <LoadingIcon />
             ) : hasNewVersion ? (
               <Link href={updateUrl} target="_blank" className="link">
@@ -692,10 +693,10 @@ export function Settings() {
                 text={Locale.Settings.Update.CheckUpdate}
                 onClick={() => checkUpdate(true)}
               />
-            )}
+            )} */}
           </ListItem>
 
-          <ListItem title={Locale.Settings.SendKey}>
+          {/* <ListItem title={Locale.Settings.SendKey}>
             <Select
               value={config.submitKey}
               onChange={(e) => {
@@ -711,7 +712,7 @@ export function Settings() {
                 </option>
               ))}
             </Select>
-          </ListItem>
+          </ListItem> */}
 
           <ListItem title={Locale.Settings.Theme}>
             <Select
@@ -764,7 +765,7 @@ export function Settings() {
             ></InputRange>
           </ListItem>
 
-          <ListItem
+          {/* <ListItem
             title={Locale.Settings.AutoGenerateTitle.Title}
             subTitle={Locale.Settings.AutoGenerateTitle.SubTitle}
           >
@@ -778,9 +779,9 @@ export function Settings() {
                 )
               }
             ></input>
-          </ListItem>
+          </ListItem> */}
 
-          <ListItem
+          {/* <ListItem
             title={Locale.Settings.SendPreviewBubble.Title}
             subTitle={Locale.Settings.SendPreviewBubble.SubTitle}
           >
@@ -794,13 +795,13 @@ export function Settings() {
                 )
               }
             ></input>
-          </ListItem>
+          </ListItem> */}
         </List>
 
-        <SyncItems />
+        {/* <SyncItems /> */}
 
         <List>
-          <ListItem
+          {/* <ListItem
             title={Locale.Settings.Mask.Splash.Title}
             subTitle={Locale.Settings.Mask.Splash.SubTitle}
           >
@@ -815,9 +816,9 @@ export function Settings() {
                 )
               }
             ></input>
-          </ListItem>
+          </ListItem> */}
 
-          <ListItem
+          {/* <ListItem
             title={Locale.Settings.Mask.Builtin.Title}
             subTitle={Locale.Settings.Mask.Builtin.SubTitle}
           >
@@ -831,9 +832,9 @@ export function Settings() {
                 )
               }
             ></input>
-          </ListItem>
+          </ListItem> */}
         </List>
-
+        {/* 
         <List>
           <ListItem
             title={Locale.Settings.Prompt.Disable.Title}
@@ -864,9 +865,9 @@ export function Settings() {
               onClick={() => setShowPromptModal(true)}
             />
           </ListItem>
-        </List>
+        </List> */}
 
-        <List>
+        {/* <List>
           {showAccessCode ? (
             <ListItem
               title={Locale.Settings.AccessCode.Title}
@@ -957,9 +958,9 @@ export function Settings() {
               }
             ></input>
           </ListItem>
-        </List>
+        </List> */}
 
-        <List>
+        {/* <List>
           <ModelConfigList
             modelConfig={config.modelConfig}
             updateConfig={(updater) => {
@@ -968,7 +969,7 @@ export function Settings() {
               config.update((config) => (config.modelConfig = modelConfig));
             }}
           />
-        </List>
+        </List> */}
 
         {shouldShowPromptModal && (
           <UserPromptModal onClose={() => setShowPromptModal(false)} />

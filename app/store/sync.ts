@@ -38,7 +38,7 @@ const DEFAULT_SYNC_STATE = {
   upstash: {
     endpoint: "",
     username: STORAGE_KEY,
-    apiKey: "",
+    apiKey: "esecret_hpbtup4hhe4rha63h2ibh2mich",
   },
 
   lastSyncTime: 0,
@@ -60,8 +60,10 @@ export const useSyncStore = createPersistStore(
     export() {
       const state = getLocalAppState();
       const datePart = isApp
-      ? `${new Date().toLocaleDateString().replace(/\//g, '_')} ${new Date().toLocaleTimeString().replace(/:/g, '_')}`
-      : new Date().toLocaleString();
+        ? `${new Date().toLocaleDateString().replace(/\//g, "_")} ${new Date()
+            .toLocaleTimeString()
+            .replace(/:/g, "_")}`
+        : new Date().toLocaleString();
 
       const fileName = `Backup-${datePart}.json`;
       downloadAs(JSON.stringify(state), fileName);
