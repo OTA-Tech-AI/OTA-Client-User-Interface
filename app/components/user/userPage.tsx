@@ -29,13 +29,13 @@ export const UserPage = () => {
   };
 
   useEffect(() => {
-    if (!isLoggedIn) {
-      navigate(Path.Login);
-    }
+    const listenerTimer = setTimeout(() => {
+      if (!access.isAuthorized()) {
+        navigate(Path.Login);
+      }
+    }, 5000);
+    return () => clearTimeout(listenerTimer);
   }, []);
-
-  const isLoggedIn = access.isAuthorized();
-  console.log(isLoggedIn);
 
   return (
     <div className={styles["user-page"]}>

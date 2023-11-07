@@ -18,14 +18,13 @@ import { getClientConfig } from "@/app/config/client";
 //User Authentication
 import { userAuthStore } from "../../store/userAuth";
 // firebase API
-import { getApp } from "firebase/app";
 import {
-  getDatabase as firebaseGetDatabase,
-  ref as firebaseRef,
-  push as firebasePush,
-  update as firebaseUpdate,
-  serverTimestamp as firebaseServerTimeStamp,
-} from "firebase/database";
+  getFireBaseConversationRef,
+  getfirebaseServerTimeStamp,
+  firebasePush,
+  firebaseUpdate,
+} from "../../api/firebase/realtimeDatabase";
+
 export interface OpenAIListModelResponse {
   object: string;
   data: Array<{
@@ -52,16 +51,6 @@ export class ChatGPTApi implements LLMApi {
       openaiUrl = "https://" + openaiUrl;
     }
     return [openaiUrl, path].join("/");
-  }
-
-  getFireBaseMsgRef() {
-    const app = getApp();
-    const fbDatabase = firebaseGetDatabase(app);
-    const dbPartition = [
-      "user_" + userAuthStore.getState().uid,
-      "conversation_" + useChatStore.getState().currentSession().id,
-    ].join("/");
-    return firebaseRef(fbDatabase, dbPartition);
   }
 
   extractMessage(res: any) {
@@ -200,12 +189,17 @@ export class ChatGPTApi implements LLMApi {
         // const resJson = await res.json();
         // const message = this.extractMessage(resJson);
         // options.onFinish(message);
+
         const FirebaseSingleMsgPayload = {
           body: JSON.stringify(requestPayload),
-          createdAt: firebaseServerTimeStamp(),
+          createdAt: getfirebaseServerTimeStamp(),
         };
 
-        const msgRef = this.getFireBaseMsgRef();
+        const msgRef = getFireBaseConversationRef(
+          "user_" + userAuthStore.getState().uid,
+          "conversation_" + useChatStore.getState().currentSession().id,
+        );
+
         // const latestUserMsg = useChatStore.getState().currentSession().messages.at(-2);
         firebasePush(msgRef, FirebaseSingleMsgPayload)
           .then((newRef: any) => {
@@ -215,7 +209,11 @@ export class ChatGPTApi implements LLMApi {
                 session.messages[session.messages.length - 2].id =
                   firebaseAutoMsgId;
               });
-              return firebaseUpdate(msgRef, { lastMessage: firebaseAutoMsgId });
+              return firebaseUpdate(msgRef, {
+                lastMessage: firebaseAutoMsgId,
+                toDevice: 0,
+                toDeviceReceived: false,
+              });
             } else {
               // Handle the case where path pieces are not available
               throw new Error("No path pieces found");
@@ -229,7 +227,7 @@ export class ChatGPTApi implements LLMApi {
             // This will catch errors from both the push and update
             console.error("An error occurred:", error);
           });
-        options.onFinish("dummy");
+        // options.onFinish("dummy");
       }
     } catch (e) {
       console.log("[Request] failed to make a chat request", e);

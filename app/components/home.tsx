@@ -18,9 +18,10 @@ import { ErrorBoundary } from "./error";
 import { getISOLang, getLang } from "../locales";
 import {
   initializeFirebase,
-  listenForChildAdded,
-  listenForChildChanged,
-  listenForChildRemoved,
+  handleChildAdded,
+  handleChildChanged,
+  handleChildRemoved,
+  useFirebaseListenerStore,
 } from "../firebase-helper";
 
 import {
@@ -35,7 +36,7 @@ import { LoginPage } from "./login";
 import { UserPage } from "./user/userPage";
 import { getClientConfig } from "../config/client";
 import { api } from "../client/api";
-import { useAccessStore } from "../store";
+import { useAccessStore, useChatStore } from "../store";
 import { userAuthStore } from "../store/userAuth";
 
 export function Loading(props: { noLogo?: boolean }) {
@@ -243,43 +244,39 @@ export function useLoadData() {
   }, []);
 }
 
-function firebaseInitialization() {
-  initializeFirebase();
+function firebaseListenerSetup() {
+  if (!userAuthStore.getState().isAuthorized()) {
+    return;
+  }
+
   const userPath = "user_" + userAuthStore.getState().uid;
 
-  // Define your callback for child added
-  const handleChildAdded = (snapshot: any, prevChildKey?: string | null) => {
-    console.log("Child added:", snapshot.key, snapshot.val(), prevChildKey);
-    // Handle the new child data here...
-  };
-
-  // Define your callback for child changed
-  const handleChildChanged = (snapshot: any) => {
-    console.log("Child changed:", snapshot.key, snapshot.val());
-    // Handle the updated child data here...
-  };
-
-  // Define your callback for child removed
-  const handleChildRemoved = (snapshot: any) => {
-    console.log("Child removed:", snapshot.key);
-    // Handle the child removal here...
-  };
-
   // Setting up the listeners
-  // listenForChildAdded(userPath, handleChildAdded);
-  // listenForChildChanged(userPath, handleChildChanged);
-  // listenForChildRemoved(userPath, handleChildRemoved);
+  useFirebaseListenerStore
+    .getState()
+    .attachListener(userPath, "child_added", handleChildAdded);
+  useFirebaseListenerStore
+    .getState()
+    .attachListener(userPath, "child_changed", handleChildChanged);
+  useFirebaseListenerStore
+    .getState()
+    .attachListener(userPath, "child_removed", handleChildRemoved);
 }
 
 export function Home() {
   useSwitchTheme();
   useLoadData();
   useHtmlLang();
-  firebaseInitialization();
 
   useEffect(() => {
     console.log("[Config] got config from build time", getClientConfig());
     useAccessStore.getState().fetch();
+    initializeFirebase();
+
+    const listenerTimer = setTimeout(() => {
+      firebaseListenerSetup();
+    }, 3000);
+    return () => clearTimeout(listenerTimer);
   }, []);
 
   if (!useHasHydrated()) {

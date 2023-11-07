@@ -38,13 +38,16 @@ export function LoginPage() {
     if (getClientConfig()?.isApp) {
       navigate(Path.Settings);
     }
-    if (isLoggedIn) {
-      navigate(Path.UserPage);
-    }
+
+    const listenerTimer = setTimeout(() => {
+      if (access.isAuthorized()) {
+        navigate(Path.UserPage);
+      }
+    }, 1000);
+    return () => clearTimeout(listenerTimer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const isLoggedIn = access.isAuthorized();
   return (
     <>
       <div className={styles["auth-page"]}>

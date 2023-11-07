@@ -75,6 +75,7 @@ export const userAuthStore = createPersistStore(
     isAuthorized() {
       const auth = getAuth();
       const isFirebaseUserSignedIn = auth.currentUser != null;
+      //   console.log(auth, auth.currentUser, isFirebaseUserSignedIn)
       return isFirebaseUserSignedIn;
     },
   }),

@@ -11,6 +11,8 @@ export const RUNTIME_CONFIG_DOM = "danger-runtime-config";
 export const DEFAULT_CORS_HOST = "https://ab.nextweb.fun";
 export const DEFAULT_API_HOST = `${DEFAULT_CORS_HOST}/api/proxy`;
 
+export const DEVICE_ID = 1;
+
 export enum Path {
   Home = "/",
   Chat = "/chat",
@@ -126,3 +128,12 @@ export const DEFAULT_MODELS = [
 
 export const CHAT_PAGE_SIZE = 15;
 export const MAX_RENDER_MSG_COUNT = 45;
+
+export const firebaseConfig = {
+  apiKey: "AIzaSyBu_QBFvmZ6n2AYzIgBsqB7-942R6BjEmw",
+  authDomain: "ota-user-system.firebaseapp.com",
+  projectId: "ota-user-system",
+  storageBucket: "ota-user-system.appspot.com",
+  messagingSenderId: "1080297856968",
+  appId: "1:1080297856968:web:ad1493d6755a03eb892afd",
+};
