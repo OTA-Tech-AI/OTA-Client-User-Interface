@@ -329,7 +329,7 @@ export const useChatStore = createPersistStore(
         });
 
         // make request
-        api.llm.chat({
+        await api.llm.chat({
           messages: sendMessages,
           //   config: { ...modelConfig, stream: true },
           config: { ...modelConfig, stream: false },

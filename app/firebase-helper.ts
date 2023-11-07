@@ -17,6 +17,7 @@ import {
 import { useChatStore } from "./store";
 import { firebaseConfig, DEVICE_ID } from "./constant";
 import { userAuthStore } from "./store/userAuth";
+import { doLocalSubmit, LocalOnFinish } from "./store/chat-helper";
 
 export const initializeFirebase = () => {
   if (!getApps().length) {
@@ -139,7 +140,7 @@ export const handleChildAdded = (
 };
 
 // Define your callback for child changed
-export const handleChildChanged = (snapshot: any) => {
+export const handleChildChanged = async (snapshot: any) => {
   // console.log("Child changed:", snapshot.key, snapshot.val());
   // console.log("current session: ", useChatStore.getState().currentSession().messages);
 
@@ -165,15 +166,16 @@ export const handleChildChanged = (snapshot: any) => {
       /* ( toDevice == 0, toDeviceReceived==true ) */
       // then PC device start to process
       console.log("then PC device start to process");
+      const lastMessageId = remoteSnapshot["lastMessage"];
+      const lastMessage = JSON.parse(remoteSnapshot[lastMessageId].body)[
+        "messages"
+      ][0]["content"];
+      await doLocalSubmit(lastMessage);
       // ................................
 
       // after processing, first push the receipt to FB
       /* ( receipt, toDevice == 0, toDeviceReceived==true ) */
-      const lastMessage = remoteSnapshot["lastMessage"];
-      const humanRequestMsg =
-        "Receipt for " +
-        JSON.parse(remoteSnapshot[lastMessage].body)["messages"][0]["content"] +
-        " done";
+      const humanRequestMsg = "Receipt for " + lastMessage + " done";
 
       const FirebaseSingleMsgPayload = {
         body: JSON.stringify({ message: humanRequestMsg }),
@@ -230,6 +232,12 @@ export const handleChildChanged = (snapshot: any) => {
       console.log(
         "then mobile device updates the receipt to local conversation",
       );
+      const lastMessageId = remoteSnapshot["lastMessage"];
+      const lastMessage = JSON.parse(remoteSnapshot[lastMessageId].body)[
+        "message"
+      ];
+      console.log(lastMessage);
+      LocalOnFinish(lastMessage);
 
       // next time when mobile sends a new msg, the first push:
       /* ( receipt, toDevice == 1, toDeviceReceived==true ) ===> to ignore */
