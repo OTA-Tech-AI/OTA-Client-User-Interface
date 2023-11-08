@@ -4,8 +4,7 @@ import {
   signOut,
   onAuthStateChanged,
 } from "firebase/auth";
-import { DEFAULT_API_HOST, DEFAULT_MODELS, StoreKey } from "../constant";
-import { getHeaders } from "../client/api";
+import { DEFAULT_API_HOST, StoreKey } from "../constant";
 import { getClientConfig } from "../config/client";
 import { createPersistStore } from "../utils/store";
 

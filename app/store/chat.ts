@@ -9,6 +9,7 @@ import {
   DEFAULT_SYSTEM_TEMPLATE,
   StoreKey,
   SUMMARIZE_MODEL,
+  IS_RECEIVER,
 } from "../constant";
 import { api, RequestMessage } from "../client/api";
 import { ChatControllerPool } from "../client/controller";
@@ -16,6 +17,7 @@ import { prettyObject } from "../utils/format";
 import { estimateTokenLength } from "../utils/token";
 import { nanoid } from "nanoid";
 import { createPersistStore } from "../utils/store";
+import { userAuthStore } from "./userAuth";
 
 export type ChatMessage = RequestMessage & {
   date: string;
@@ -51,6 +53,7 @@ export interface ChatSession {
   lastUpdate: number;
   lastSummarizeIndex: number;
   clearContextIndex?: number;
+  serverResponded: boolean;
 
   mask: Mask;
 }
@@ -74,6 +77,7 @@ function createEmptySession(): ChatSession {
     },
     lastUpdate: Date.now(),
     lastSummarizeIndex: 0,
+    serverResponded: false,
 
     mask: createEmptyMask(),
   };
@@ -279,6 +283,40 @@ export const useChatStore = createPersistStore(
         return session;
       },
 
+      currentSessionQueryServerStart() {
+        get().updateCurrentSession((session) => {
+          session.serverResponded = false;
+        });
+      },
+      currentSessionQueryServerEnd() {
+        get().updateCurrentSession((session) => {
+          session.serverResponded = true;
+        });
+      },
+      currentSessionQueryServerStatus() {
+        return get().currentSession().serverResponded;
+      },
+
+      getLatestBotMessage() {
+        return get().currentSession().messages.at(-1)?.content;
+      },
+
+      checkUserLoggedIn(callback: Function) {
+        if (userAuthStore.getState().isAuthorized()) {
+          return true;
+        }
+        showToast(
+          "Please login to send messages",
+          {
+            text: "Login",
+            onClick() {
+              callback();
+            },
+          },
+          5000,
+        );
+      },
+
       onNewMessage(message: ChatMessage) {
         get().updateCurrentSession((session) => {
           session.messages = session.messages.concat();
@@ -331,8 +369,7 @@ export const useChatStore = createPersistStore(
         // make request
         await api.llm.chat({
           messages: sendMessages,
-          //   config: { ...modelConfig, stream: true },
-          config: { ...modelConfig, stream: false },
+          config: { ...modelConfig, stream: IS_RECEIVER },
           onUpdate(message) {
             botMessage.streaming = true;
             if (message) {
@@ -349,6 +386,7 @@ export const useChatStore = createPersistStore(
               get().onNewMessage(botMessage);
             }
             ChatControllerPool.remove(session.id, botMessage.id);
+            get().currentSessionQueryServerEnd();
           },
           onError(error) {
             const isAborted = error.message.includes("aborted");
@@ -606,6 +644,18 @@ export const useChatStore = createPersistStore(
         const index = get().currentSessionIndex;
         updater(sessions[index]);
         set(() => ({ sessions }));
+      },
+
+      changeLastUserMessageId(newId: string) {
+        get().updateCurrentSession((session) => {
+          session.messages[session.messages.length - 2].id = newId;
+        });
+      },
+
+      changeLastBotMessageId(newId: string) {
+        get().updateCurrentSession((session) => {
+          session.messages[session.messages.length - 1].id = newId;
+        });
       },
 
       clearAllData() {

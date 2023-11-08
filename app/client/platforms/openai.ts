@@ -110,6 +110,7 @@ export class ChatGPTApi implements LLMApi {
           if (!finished) {
             options.onFinish(responseText);
             finished = true;
+            console.log("return finish receipt");
           }
         };
 

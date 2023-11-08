@@ -12,6 +12,8 @@ export const DEFAULT_CORS_HOST = "https://ab.nextweb.fun";
 export const DEFAULT_API_HOST = `${DEFAULT_CORS_HOST}/api/proxy`;
 
 export const DEVICE_ID = 1;
+export const IS_RECEIVER = false;
+export const WAIT_SERVER_TIMEOUT = 120;
 
 export enum Path {
   Home = "/",

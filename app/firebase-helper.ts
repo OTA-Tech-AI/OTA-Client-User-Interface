@@ -15,9 +15,13 @@ import {
   getfirebaseServerTimeStamp,
 } from "./api/firebase/realtimeDatabase";
 import { useChatStore } from "./store";
-import { firebaseConfig, DEVICE_ID } from "./constant";
+import { firebaseConfig, DEVICE_ID, WAIT_SERVER_TIMEOUT } from "./constant";
 import { userAuthStore } from "./store/userAuth";
-import { doLocalSubmit, LocalOnFinish } from "./store/chat-helper";
+import {
+  doLocalSubmit,
+  LocalOnFinish,
+  waitMillisecond,
+} from "./store/chat-helper";
 
 export const initializeFirebase = () => {
   if (!getApps().length) {
@@ -136,7 +140,6 @@ export const handleChildAdded = (
     "current session: ",
     useChatStore.getState().currentSession().messages,
   );
-  // Handle the new child data here...
 };
 
 // Define your callback for child changed
@@ -166,19 +169,34 @@ export const handleChildChanged = async (snapshot: any) => {
       /* ( toDevice == 0, toDeviceReceived==true ) */
       // then PC device start to process
       console.log("then PC device start to process");
+
+      useChatStore.getState().currentSessionQueryServerStart();
       const lastMessageId = remoteSnapshot["lastMessage"];
       const lastMessage = JSON.parse(remoteSnapshot[lastMessageId].body)[
         "messages"
       ][0]["content"];
-      await doLocalSubmit(lastMessage);
-      // ................................
+
+      doLocalSubmit(lastMessage);
+
+      let serverSuccess = false;
+      let botMessage: string | undefined =
+        "The remote device needs more time to execute the task, please check its receipt later.\nYour Task: " +
+        lastMessage;
+      for (let i = 0; i < WAIT_SERVER_TIMEOUT; i++) {
+        if (useChatStore.getState().currentSessionQueryServerStatus()) {
+          serverSuccess = true;
+          console.log("OTA is working now, waiting " + i + " second...");
+          botMessage = useChatStore.getState().getLatestBotMessage();
+          break;
+        }
+        await waitMillisecond(1000);
+      }
 
       // after processing, first push the receipt to FB
       /* ( receipt, toDevice == 0, toDeviceReceived==true ) */
-      const humanRequestMsg = "Receipt for " + lastMessage + " done";
 
       const FirebaseSingleMsgPayload = {
-        body: JSON.stringify({ message: humanRequestMsg }),
+        body: JSON.stringify({ message: botMessage }),
         createdAt: getfirebaseServerTimeStamp(),
       };
 
@@ -187,10 +205,11 @@ export const handleChildChanged = async (snapshot: any) => {
           if (newRef._path) {
             const firebaseAutoMsgId = newRef._path.pieces_[2];
             console.log("DEVICE 0 Receipt: ", firebaseAutoMsgId);
-            //   useChatStore.getState().updateCurrentSession((session) => {
-            // 	session.messages[session.messages.length - 2].id =
-            // 	  firebaseAutoMsgId;
-            //   });
+            useChatStore.getState().changeLastBotMessageId(firebaseAutoMsgId);
+            console.log(
+              firebaseAutoMsgId,
+              useChatStore.getState().currentSession(),
+            );
 
             // finally send another msg to FB to push ball pack to Mobile device
             /* ( receipt, toDevice == 1, toDeviceReceived==false ) */
@@ -246,8 +265,6 @@ export const handleChildChanged = async (snapshot: any) => {
       // then back to the top
     }
   }
-
-  // Handle the updated child data here...
 };
 
 // Define your callback for child removed

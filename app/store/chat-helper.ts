@@ -43,3 +43,7 @@ export function LocalOnFinish(message: string) {
   onNewMessage(botMessage);
   ChatControllerPool.remove(session.id, botMessageId);
 }
+
+export function waitMillisecond(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}

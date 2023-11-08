@@ -689,6 +689,9 @@ function _Chat() {
 
   const doSubmit = (userInput: string) => {
     if (userInput.trim() === "") return;
+    if (!chatStore.checkUserLoggedIn(() => navigate(Path.Login))) {
+      return;
+    }
     const matchCommand = chatCommands.match(userInput);
     if (matchCommand.matched) {
       setUserInput("");
