@@ -6,6 +6,7 @@ import {
   onChildChanged,
   onChildRemoved,
   off,
+  DataSnapshot,
 } from "firebase/database";
 import { createPersistStore } from "./utils/store";
 import {
@@ -36,52 +37,49 @@ export const initializeFirebase = () => {
 // Define a listener type to store our listeners
 interface Listener {
   eventType: string;
-  callback: Function;
+  callback: (snapshot: DataSnapshot, previousChildName?: string | null) => any;
+  query: string;
 }
 
 // The default state will simply be an empty object
-const DEFAULT_LISTENER_STATE: { [key: string]: Listener | null } = {
-  ConversationOnChildAddedListener: null,
-  ConversationOnChildChangededListener: null,
-  ConversationOnChildRemovedListener: null,
+const DEFAULT_LISTENER_STATE: { [key: string]: Listener } = {
+  ConversationOnChildAddedListener: {
+    eventType: "child_added",
+    callback: () => {},
+    query: "",
+  },
+  ConversationOnChildChangedListener: {
+    eventType: "child_changed",
+    callback: () => {},
+    query: "",
+  },
+  ConversationOnChildRemovedListener: {
+    eventType: "child_removed",
+    callback: () => {},
+    query: "",
+  },
 };
 
 export const useFirebaseListenerStore = createPersistStore(
   DEFAULT_LISTENER_STATE,
   (set, get) => ({
     attachListener(path: string, eventType: string, callback: Function) {
-      let currentListener = get().ConversationOnChildAddedListener;
-      switch (eventType) {
-        case "child_added":
-          break;
-        case "child_changed":
-          currentListener = get().ConversationOnChildAddedListener;
-          break;
-        case "child_removed":
-          currentListener = get().ConversationOnChildRemovedListener;
-          break;
-        default:
-          console.warn("Unsupported event type");
-          return;
-      }
-
       const database = getDatabase();
       const databaseRef = ref(database, path);
 
       // Use the appropriate Firebase method based on the event type
-      const eventHandler = (snapshot: any) => {
+      const eventHandler = (snapshot: DataSnapshot) => {
         callback(snapshot);
       };
       console.log("Attaching listener for:", eventType);
       switch (eventType) {
         case "child_added":
-          onChildAdded(databaseRef, (snapshot, prevChildKey) => {
-            callback(snapshot, prevChildKey);
-          });
+          onChildAdded(databaseRef, eventHandler);
           set({
             ConversationOnChildAddedListener: {
-              eventType,
+              eventType: eventType,
               callback: eventHandler,
+              query: path,
             },
           });
           break;
@@ -89,17 +87,19 @@ export const useFirebaseListenerStore = createPersistStore(
           onChildChanged(databaseRef, eventHandler);
           set({
             ConversationOnChildChangedListener: {
-              eventType,
+              eventType: eventType,
               callback: eventHandler,
+              query: path,
             },
           });
           break;
         case "child_removed":
           onChildRemoved(databaseRef, eventHandler);
           set({
-            ConversationOnChildremovedListener: {
-              eventType,
+            ConversationOnChildRemovedListener: {
+              eventType: eventType,
               callback: eventHandler,
+              query: path,
             },
           });
           break;
@@ -109,20 +109,62 @@ export const useFirebaseListenerStore = createPersistStore(
       }
     },
 
-    // detachListener(path: string, eventType: string) {
-    //   const database = getDatabase();
-    //   const databaseRef = ref(database, path);
-    //   const listenerKey = `${path}_${eventType}`;
-    //   const currentListeners = get();
+    detachListener(path: string, eventType: string) {
+      const database = getDatabase();
+      const databaseRef = ref(database, path);
 
-    //   // Remove the listener if it exists
-    //   if (currentListeners[listenerKey]) {
-    //     off(databaseRef, eventType, currentListeners[listenerKey].callback);
-    //     const { [listenerKey]: _, ...remainingListeners } = currentListeners;
-    //     set(remainingListeners);
-    //     console.log(`Listener detached for ${listenerKey}`);
-    //   }
-    // },
+      switch (eventType) {
+        case "child_added":
+          off(
+            databaseRef,
+            "child_added",
+            get().ConversationOnChildAddedListener.callback,
+          );
+          set({
+            currentOnChildAddedListener: {
+              eventType: "child_added",
+              callback: () => {},
+              query: "",
+            },
+          });
+          break;
+
+        case "child_changed":
+          off(
+            databaseRef,
+            "child_changed",
+            get().ConversationOnChildChangedListener.callback,
+          );
+          set({
+            ConversationOnChildChangedListener: {
+              eventType: "child_changed",
+              callback: () => {},
+              query: "",
+            },
+          });
+          break;
+
+        case "child_removed":
+          off(
+            databaseRef,
+            "child_removed",
+            get().ConversationOnChildRemovedListener.callback,
+          );
+          set({
+            ConversationOnChildRemovedListener: {
+              eventType: "child_removed",
+              callback: () => {},
+              query: "",
+            },
+          });
+          break;
+
+        default:
+          console.warn("Unsupported event type");
+          return;
+      }
+      console.log(`Listener detached for ${eventType}`);
+    },
   }),
   {
     name: "FirebaseListeners",
@@ -272,3 +314,34 @@ export const handleChildRemoved = (snapshot: any) => {
   console.log("Child removed:", snapshot.key);
   // Handle the child removal here...
 };
+
+export function firebaseListenerSetup() {
+  if (!userAuthStore.getState().isAuthorized()) {
+    return;
+  }
+
+  const userPath = "user_" + userAuthStore.getState().uid;
+
+  // Setting up the listeners
+  useFirebaseListenerStore
+    .getState()
+    .attachListener(userPath, "child_added", handleChildAdded);
+  useFirebaseListenerStore
+    .getState()
+    .attachListener(userPath, "child_changed", handleChildChanged);
+  useFirebaseListenerStore
+    .getState()
+    .attachListener(userPath, "child_removed", handleChildRemoved);
+}
+
+export function firebaseListenerTeardown() {
+  const attachedListenerEvent = [
+    "child_added",
+    "child_changed",
+    "child_removed",
+  ];
+  attachedListenerEvent.forEach((eventType) => {
+    const userPath = "user_" + userAuthStore.getState().uid;
+    useFirebaseListenerStore.getState().detachListener(userPath, eventType);
+  });
+}

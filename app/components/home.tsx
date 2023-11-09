@@ -16,13 +16,7 @@ import { Path, SlotID } from "../constant";
 import { ErrorBoundary } from "./error";
 
 import { getISOLang, getLang } from "../locales";
-import {
-  initializeFirebase,
-  handleChildAdded,
-  handleChildChanged,
-  handleChildRemoved,
-  useFirebaseListenerStore,
-} from "../firebase-helper";
+import { initializeFirebase, firebaseListenerSetup } from "../firebase-helper";
 
 import {
   HashRouter as Router,
@@ -242,25 +236,6 @@ export function useLoadData() {
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-}
-
-function firebaseListenerSetup() {
-  if (!userAuthStore.getState().isAuthorized()) {
-    return;
-  }
-
-  const userPath = "user_" + userAuthStore.getState().uid;
-
-  // Setting up the listeners
-  useFirebaseListenerStore
-    .getState()
-    .attachListener(userPath, "child_added", handleChildAdded);
-  useFirebaseListenerStore
-    .getState()
-    .attachListener(userPath, "child_changed", handleChildChanged);
-  useFirebaseListenerStore
-    .getState()
-    .attachListener(userPath, "child_removed", handleChildRemoved);
 }
 
 export function Home() {

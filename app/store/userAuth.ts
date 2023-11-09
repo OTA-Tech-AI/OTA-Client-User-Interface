@@ -7,6 +7,10 @@ import {
 import { DEFAULT_API_HOST, StoreKey } from "../constant";
 import { getClientConfig } from "../config/client";
 import { createPersistStore } from "../utils/store";
+import {
+  firebaseListenerSetup,
+  firebaseListenerTeardown,
+} from "../firebase-helper";
 
 const DEFAULT_OPENAI_URL =
   getClientConfig()?.buildMode === "export" ? DEFAULT_API_HOST : "/api/openai/";
@@ -34,6 +38,7 @@ export const userAuthStore = createPersistStore(
         if (!!auth.currentUser && !!auth.currentUser.uid) {
           set(() => ({ uid: auth.currentUser?.uid }));
         }
+        firebaseListenerSetup();
 
         console.log(
           "[Auth] user sign in with Firebase successfully, email: ",
@@ -50,6 +55,8 @@ export const userAuthStore = createPersistStore(
       try {
         const auth = getAuth();
         await signOut(auth);
+        firebaseListenerTeardown();
+
         // User signed out successfully
         set(() => ({ email: "", password: "", uid: "" }));
         console.log("[Auth] Signed out successfully, email: ", get().email);
