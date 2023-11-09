@@ -369,7 +369,7 @@ export const useChatStore = createPersistStore(
         // make request
         await api.llm.chat({
           messages: sendMessages,
-          config: { ...modelConfig, stream: IS_RECEIVER },
+          config: { ...modelConfig, stream: true },
           onUpdate(message) {
             botMessage.streaming = true;
             if (message) {

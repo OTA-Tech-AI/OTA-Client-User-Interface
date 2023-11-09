@@ -3,6 +3,7 @@ import {
   DEFAULT_MODELS,
   OpenaiPath,
   REQUEST_TIMEOUT_MS,
+  IS_RECEIVER,
 } from "@/app/constant";
 import { useAccessStore, useAppConfig, useChatStore } from "@/app/store";
 
@@ -111,7 +112,7 @@ export class ChatGPTApi implements LLMApi {
         REQUEST_TIMEOUT_MS,
       );
       // enter when 1. in chatmode OR  2. is the receiver (pc host)
-      if (!(requestPayload.model === "OTA_ACTION") || shouldStream) {
+      if (!(requestPayload.model === "OTA_ACTION") || IS_RECEIVER) {
         let responseText = "";
         let finished = false;
 
