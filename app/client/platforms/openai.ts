@@ -81,6 +81,10 @@ export class ChatGPTApi implements LLMApi {
       top_p: modelConfig.top_p,
     };
 
+    const shouldStream = !!options.config.stream;
+    const controller = new AbortController();
+    options.onController?.(controller);
+
     console.log("[Request] openai payload: ", requestPayload);
     if (requestPayload.model === "OTA_ACTION") {
       useAccessStore.getState().openaiUrl = "http://localhost:5000";
@@ -90,10 +94,6 @@ export class ChatGPTApi implements LLMApi {
         "https://api.endpoints.anyscale.com";
       console.log("llama");
     }
-
-    const shouldStream = !!options.config.stream;
-    const controller = new AbortController();
-    options.onController?.(controller);
 
     try {
       const chatPath = this.path(OpenaiPath.ChatPath);
@@ -110,9 +110,8 @@ export class ChatGPTApi implements LLMApi {
         () => controller.abort(),
         REQUEST_TIMEOUT_MS,
       );
-      //if shouldstream
-      if (!(requestPayload.model === "OTA_ACTION")) {
-        //mobile side use this
+      // enter when 1. in chatmode OR  2. is the receiver (pc host)
+      if (!(requestPayload.model === "OTA_ACTION") || shouldStream) {
         let responseText = "";
         let finished = false;
 
@@ -193,6 +192,7 @@ export class ChatGPTApi implements LLMApi {
           },
           openWhenHidden: true,
         });
+        // enter when 1. in action mode  AND  2. is the receiver (pc host)
       } else {
         // const res = await fetch(chatPath, chatPayload);
         // clearTimeout(requestTimeoutId);
