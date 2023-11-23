@@ -4,6 +4,7 @@ import { userAuthStore } from "../../store/userAuth";
 import { useNavigate } from "react-router-dom";
 import { Path } from "../../constant";
 import { useEffect } from "react";
+import { UserRecord } from "./userRecord";
 
 export const UserPage = () => {
   const access = userAuthStore();
@@ -69,6 +70,7 @@ export const UserPage = () => {
           </tbody>
         </table>
       </div>
+      <UserRecord />
       <div className={styles["sign-out-button"]}>
         <IconButton text="Sign out" type="primary" onClick={handleSignOut} />
       </div>
