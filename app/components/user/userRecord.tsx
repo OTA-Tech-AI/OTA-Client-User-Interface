@@ -8,6 +8,7 @@ import {
   FAQSet,
   fetchCurrentRecord,
   submitNewRecord,
+  deleteRecord,
 } from "../../store/record-helper";
 
 export const UserRecord = () => {
@@ -53,6 +54,21 @@ export const UserRecord = () => {
       });
   };
 
+  const handleDelete = (faq: FAQSet) => {
+    deleteRecord(faq)
+      .then((response: Response) => {
+        if (response.status === 200) {
+          // Fetch the updated data
+          fetchData();
+        } else {
+          console.error("Delete failed with status:", response.status);
+        }
+      })
+      .catch((error: Error) => {
+        console.error("Error during deletion:", error);
+      });
+  };
+
   useEffect(() => {
     fetchData();
   }, []);
@@ -65,6 +81,7 @@ export const UserRecord = () => {
             <th className="record-question">Question</th>
             <th className="record-answer">Answer</th>
             <th className="record-status">Status</th>
+            <th className="record-operation"></th>
           </tr>
         </thead>
         <tbody>
@@ -75,9 +92,23 @@ export const UserRecord = () => {
               <td className="record-status">
                 {faq.status == 1 ? "Added" : "Pending"}
               </td>
+              <td className="record-operation">
+                <button
+                  onClick={() =>
+                    handleDelete({
+                      index: index,
+                      question: faq.question,
+                      answer: faq.answer,
+                      status: faq.status,
+                    })
+                  }
+                >
+                  Delete
+                </button>
+              </td>
             </tr>
           ))}
-          <tr key={10}>
+          <tr>
             <td className="record-question">
               <textarea
                 name="question"
@@ -92,9 +123,9 @@ export const UserRecord = () => {
                 onChange={handleInputChange}
               />
             </td>
+            <td></td>
             <td>
               <button onClick={handleSubmit}>Submit</button>
-              {/* <button onClick={handleSubmit}>Delete</button> */}
             </td>
           </tr>
         </tbody>

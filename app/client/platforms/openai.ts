@@ -15,6 +15,7 @@ import {
 } from "@fortaine/fetch-event-source";
 import { prettyObject } from "@/app/utils/format";
 import { getClientConfig } from "@/app/config/client";
+import { LOCAL_OTA_BRAIN_HOST } from "../../constant";
 
 //User Authentication
 import { userAuthStore } from "../../store/userAuth";
@@ -88,7 +89,7 @@ export class ChatGPTApi implements LLMApi {
 
     console.log("[Request] openai payload: ", requestPayload);
     if (requestPayload.model === "OTA_ACTION") {
-      useAccessStore.getState().openaiUrl = "http://localhost:5000";
+      useAccessStore.getState().openaiUrl = LOCAL_OTA_BRAIN_HOST;
       console.log("success");
     } else {
       useAccessStore.getState().openaiUrl =
