@@ -109,3 +109,10 @@ export const firebaseConfig = {
   messagingSenderId: "1080297856968",
   appId: "1:1080297856968:web:ad1493d6755a03eb892afd",
 };
+
+export const LIBRARY_ROUTES = {
+  getData: "api/libfaq",
+  submitNewData: "api/libfaq/submit",
+  editData: "api/libfaq/edit",
+  deleteData: "api/libfaq/delete",
+};

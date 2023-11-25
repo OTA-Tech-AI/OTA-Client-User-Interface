@@ -70,7 +70,6 @@ export const UserPage = () => {
           </tbody>
         </table>
       </div>
-      <UserRecord />
       <div className={styles["sign-out-button"]}>
         <IconButton text="Sign out" type="primary" onClick={handleSignOut} />
       </div>

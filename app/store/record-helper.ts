@@ -1,4 +1,4 @@
-import { LAST_INPUT_KEY } from "../constant";
+import { LIBRARY_ROUTES } from "../constant";
 import { useChatStore, ChatMessage, createMessage } from ".";
 import { REMOTE_OTA_BRAIN_HOST } from "../constant";
 
@@ -11,7 +11,9 @@ export interface FAQSet {
 
 export async function fetchCurrentRecord(): Promise<FAQSet[]> {
   try {
-    const response = await fetch(`${REMOTE_OTA_BRAIN_HOST}/api/csv`);
+    const response = await fetch(
+      `${REMOTE_OTA_BRAIN_HOST}/${LIBRARY_ROUTES.getData}`,
+    );
     if (!response.ok) {
       throw new Error("Failed to fetch User FAQ configuration.");
     }
@@ -27,13 +29,16 @@ export async function submitNewRecord(data: {
   answer: string;
 }): Promise<Response> {
   try {
-    const response = await fetch(`${REMOTE_OTA_BRAIN_HOST}/api/csv/submit`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
+    const response = await fetch(
+      `${REMOTE_OTA_BRAIN_HOST}/${LIBRARY_ROUTES.submitNewData}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
       },
-      body: JSON.stringify(data),
-    });
+    );
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
@@ -50,13 +55,16 @@ export async function editRecord(
   newData: FAQSet,
 ): Promise<Response> {
   try {
-    const response = await fetch(`${REMOTE_OTA_BRAIN_HOST}/api/csv/edit`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
+    const response = await fetch(
+      `${REMOTE_OTA_BRAIN_HOST}/${LIBRARY_ROUTES.editData}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ old_data: oldData, new_data: newData }),
       },
-      body: JSON.stringify({ old_data: oldData, new_data: newData }),
-    });
+    );
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
@@ -70,13 +78,16 @@ export async function editRecord(
 
 export async function deleteRecord(data: FAQSet): Promise<Response> {
   try {
-    const response = await fetch(`${REMOTE_OTA_BRAIN_HOST}/api/csv/delete`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
+    const response = await fetch(
+      `${REMOTE_OTA_BRAIN_HOST}/${LIBRARY_ROUTES.deleteData}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
       },
-      body: JSON.stringify(data),
-    });
+    );
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
