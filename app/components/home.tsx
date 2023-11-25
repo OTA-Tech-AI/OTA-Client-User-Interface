@@ -28,6 +28,7 @@ import { SideBar } from "./sidebar";
 import { useAppConfig } from "../store/config";
 import { LoginPage } from "./login";
 import { UserPage } from "./user/userPage";
+import { UserRecord } from "./user/userRecord";
 import { getClientConfig } from "../config/client";
 import { api } from "../client/api";
 import { useAccessStore, useChatStore } from "../store";
@@ -131,6 +132,7 @@ function Screen() {
     HOME = "HOME",
     CHAT = "CHAT",
     USERPAGE = "USERPAGE",
+    SINGLEFAQ = "SINGLEFAQ",
   }
   const config = useAppConfig();
   const location = useLocation();
@@ -138,6 +140,7 @@ function Screen() {
   //   const isAuth = location.pathname === Path.Auth;
   const isLogin = location.pathname === Path.Login;
   const isUserPage = location.pathname === Path.UserPage;
+  const isSingleFAQ = location.pathname === Path.SingleFAQ;
   const isMobileScreen = useMobileScreen();
   const shouldTightBorder =
     getClientConfig()?.isApp || (config.tightBorder && !isMobileScreen);
@@ -151,6 +154,8 @@ function Screen() {
     currentAppState = AppState.LOGIN;
   } else if (isUserPage) {
     currentAppState = AppState.USERPAGE;
+  } else if (isSingleFAQ) {
+    currentAppState = AppState.SINGLEFAQ;
   }
 
   return (
@@ -184,6 +189,8 @@ function Screen() {
             );
           case AppState.USERPAGE:
             return <UserPage />;
+          case AppState.SINGLEFAQ:
+            return <UserRecord />;
           // return <div></div>
           // ... Handle more cases as needed
           default:

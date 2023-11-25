@@ -135,7 +135,7 @@ export function Modal(props: ModalProps) {
             className={styles["modal-header-action"]}
             onClick={() => setMax(!isMax)}
           >
-            {/* {isMax ? <MinIcon /> : <MaxIcon />} */}
+            {isMax ? <MinIcon /> : <MaxIcon />}
           </div>
           <div
             className={styles["modal-header-action"]}
@@ -148,6 +148,31 @@ export function Modal(props: ModalProps) {
 
       <div className={styles["modal-content"]}>{props.children}</div>
 
+      <div className={styles["modal-footer"]}>
+        <div className={styles["modal-actions"]}>
+          {props.actions?.map((action, i) => (
+            <div key={i} className={styles["modal-action"]}>
+              {action}
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export function ListPanel(props: ModalProps) {
+  const isMax = true;
+  return (
+    <div
+      className={
+        styles["modal-container"] + ` ${isMax && styles["modal-container-max"]}`
+      }
+    >
+      <div className={styles["modal-header"]}>
+        <div className={styles["modal-title"]}>{props.title}</div>
+      </div>
+      <div className={styles["modal-content"]}>{props.children}</div>
       <div className={styles["modal-footer"]}>
         <div className={styles["modal-actions"]}>
           {props.actions?.map((action, i) => (

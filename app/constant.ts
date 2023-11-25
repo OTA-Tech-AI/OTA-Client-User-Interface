@@ -29,6 +29,7 @@ export enum Path {
   Auth = "/auth",
   Login = "/login",
   UserPage = "/user",
+  SingleFAQ = "/singlefaq",
 }
 
 export enum ApiPath {

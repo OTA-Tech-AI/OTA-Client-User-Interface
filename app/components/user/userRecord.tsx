@@ -8,15 +8,27 @@ import {
   FAQSet,
   fetchCurrentRecord,
   submitNewRecord,
+  editRecord,
   deleteRecord,
 } from "../../store/record-helper";
+import {
+  List,
+  ListItem,
+  ListPanel,
+  Selector,
+  showConfirm,
+  showPrompt,
+  showToast,
+} from "../ui-lib";
+import { SingleFAQModal, NewSingleFAQModal } from "./knowledgeConfig/singleFAQ";
 
 export const UserRecord = () => {
   const access = userAuthStore();
   const navigate = useNavigate();
-  const goChat = () => navigate(Path.Chat);
   const [faqs, setFaqs] = useState<FAQSet[]>([]);
   const [inputData, setInputData] = useState({ question: "", answer: "" });
+  const [FAQModalIndex, setFAQModalIndex] = useState(-1);
+  const [showNewFAQModal, setshowNewFAQModal] = useState(false);
 
   // Handle input change
   const handleInputChange = (e: any) => {
@@ -29,13 +41,9 @@ export const UserRecord = () => {
   };
 
   // Handle form submission
-  const handleSubmit = () => {
-    // if (inputData.question.trim() === '' || inputData.answer.trim() === '') {
-    //     alert('Please fill in both question and answer fields.');
-    //     return; // Stop the function from proceeding further
-    // }
+  const handleSubmit = (newFaq: { question: string; answer: string }) => {
     // Add logic to handle submission here
-    submitNewRecord(inputData)
+    submitNewRecord(newFaq)
       .then((response: Response) => {
         // Check if the response status is 200
         if (response.status === 200) {
@@ -51,6 +59,21 @@ export const UserRecord = () => {
       .catch((error: Error) => {
         // Handle any errors that occurred during submitNewRecord
         console.error("Error during submission:", error);
+      });
+  };
+
+  const handleEdit = (oldFaq: FAQSet, newFaq: FAQSet) => {
+    editRecord(oldFaq, newFaq)
+      .then((response: Response) => {
+        if (response.status === 200) {
+          // Fetch the updated data
+          fetchData();
+        } else {
+          console.error("Delete failed with status:", response.status);
+        }
+      })
+      .catch((error: Error) => {
+        console.error("Error during deletion:", error);
       });
   };
 
@@ -74,62 +97,60 @@ export const UserRecord = () => {
   }, []);
 
   return (
-    <div className={styles["user-record"]}>
-      <table>
-        <thead>
-          <tr>
-            <th className="record-question">Question</th>
-            <th className="record-answer">Answer</th>
-            <th className="record-status">Status</th>
-            <th className="record-operation"></th>
-          </tr>
-        </thead>
-        <tbody>
-          {faqs.map((faq, index) => (
-            <tr key={index}>
-              <td className="record-question">{faq.question}</td>
-              <td className="record-answer">{faq.answer}</td>
-              <td className="record-status">
-                {faq.status == 1 ? "Added" : "Pending"}
-              </td>
-              <td className="record-operation">
-                <button
-                  onClick={() =>
-                    handleDelete({
-                      index: index,
-                      question: faq.question,
-                      answer: faq.answer,
-                      status: faq.status,
-                    })
-                  }
-                >
-                  Delete
-                </button>
-              </td>
+    <ListPanel title="FAQ Admin Panel">
+      <IconButton
+        text="Add New"
+        type="primary"
+        onClick={() => {
+          setshowNewFAQModal(true);
+        }}
+      />
+      {showNewFAQModal && (
+        <NewSingleFAQModal
+          onClose={() => setshowNewFAQModal(false)}
+          submitHandler={handleSubmit}
+        />
+      )}
+      <div className={styles["user-record"]}>
+        <table>
+          <thead>
+            <tr>
+              <th className="record-question">Question</th>
+              <th className="record-answer">Answer</th>
+              <th className="record-status">Status</th>
+              <th className="record-operation"></th>
             </tr>
-          ))}
-          <tr>
-            <td className="record-question">
-              <textarea
-                name="question"
-                value={inputData.question}
-                onChange={handleInputChange}
-              />
-            </td>
-            <td className="record-answer">
-              <textarea
-                name="answer"
-                value={inputData.answer}
-                onChange={handleInputChange}
-              />
-            </td>
-            <td></td>
-            <td>
-              <button onClick={handleSubmit}>Submit</button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+          </thead>
+          <tbody>
+            {faqs.map((faq, index) => (
+              <tr key={index}>
+                <td className="record-question">{faq.question}</td>
+                <td className="record-answer">{faq.answer}</td>
+                <td className="record-status">
+                  {faq.status == 1 ? "Added" : "Pending"}
+                </td>
+                <td className="record-operation">
+                  <IconButton
+                    text="Edit"
+                    type="primary"
+                    onClick={() => {
+                      setFAQModalIndex(index);
+                    }}
+                  />
+                  {FAQModalIndex == index && (
+                    <SingleFAQModal
+                      onClose={() => setFAQModalIndex(-1)}
+                      faq={faq}
+                      editHandler={handleEdit}
+                      deleteHandler={handleDelete}
+                    />
+                  )}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </ListPanel>
   );
 };
