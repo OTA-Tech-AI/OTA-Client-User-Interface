@@ -90,7 +90,10 @@ export const UserRecordKnowledge = () => {
   }, []);
 
   return (
-    <ListPanel title="Knowledge Admin Panel">
+    <ListPanel
+      title="Knowledge Admin Panel"
+      onClose={() => navigate(Path.UserPage)}
+    >
       <IconButton
         text="Add New"
         type="primary"
@@ -122,7 +125,17 @@ export const UserRecordKnowledge = () => {
                 </td>
                 <td className="record-knowledge">{knowledge.knowledge}</td>
                 <td className="record-status">
-                  {knowledge.status == 1 ? "Added" : "Pending"}
+                  <span
+                    className={`${styles["status-box"]} ${
+                      styles[
+                        knowledge.status === 1
+                          ? "status-added"
+                          : "status-pending"
+                      ]
+                    }`}
+                  >
+                    {knowledge.status == 1 ? "Added" : "Pending"}
+                  </span>
                 </td>
                 <td className="record-operation">
                   <IconButton

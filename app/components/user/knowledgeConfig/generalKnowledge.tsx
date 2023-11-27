@@ -4,7 +4,7 @@ import { userAuthStore } from "../../../store/userAuth";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { KnowledgeSet } from "../../../store/record-helper";
-import { List, ListItem, Modal } from "../../ui-lib";
+import { List, ListItem, Modal, showConfirm } from "../../ui-lib";
 import Locale from "../../../locales";
 import ConfirmIcon from "../../../icons/confirm.svg";
 import CancelIcon from "../../../icons/cancel.svg";
@@ -22,6 +22,8 @@ export function GeneralKnowledgeModal(props: {
     title: props.data.title,
     knowledge: props.data.knowledge,
   });
+  const confirmEditMessage = "Confirm to edit?";
+  const confirmDeleteMessage = "Confirm to delete?";
 
   const handleInputChange = (e: any) => {
     setInputData({ ...inputData, [e.target.name]: e.target.value });
@@ -61,8 +63,10 @@ export function GeneralKnowledgeModal(props: {
                   text="Delete"
                   icon={<DeleteIcon />}
                   key="delete"
-                  onClick={() => {
-                    handleDelete();
+                  onClick={async () => {
+                    if (await showConfirm(confirmDeleteMessage)) {
+                      handleDelete();
+                    }
                   }}
                 />,
                 <IconButton
@@ -80,8 +84,10 @@ export function GeneralKnowledgeModal(props: {
                   text="Delete"
                   icon={<DeleteIcon />}
                   key="delete"
-                  onClick={() => {
-                    handleDelete();
+                  onClick={async () => {
+                    if (await showConfirm(confirmDeleteMessage)) {
+                      handleDelete();
+                    }
                   }}
                 />,
                 <IconButton
@@ -97,8 +103,10 @@ export function GeneralKnowledgeModal(props: {
                   text={Locale.UI.Confirm}
                   icon={<ConfirmIcon />}
                   key="ok"
-                  onClick={() => {
-                    handleEdit();
+                  onClick={async () => {
+                    if (await showConfirm(confirmEditMessage)) {
+                      handleEdit();
+                    }
                   }}
                 />,
               ]

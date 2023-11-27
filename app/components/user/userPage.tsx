@@ -1,5 +1,5 @@
 import styles from "./userPage.module.scss";
-import { IconButton } from "../button";
+import { IconButton, LargeIconButton } from "../button";
 import { userAuthStore } from "../../store/userAuth";
 import { useNavigate } from "react-router-dom";
 import { Path } from "../../constant";
@@ -43,35 +43,42 @@ export const UserPage = () => {
       <div className={styles["user-email"]}>
         <span>User: </span> {userEmail}
       </div>
-      <div className={styles["go-back-button"]}>
+      <h2>Administrator Panels</h2>
+      <div className={styles["database-section"]}>
+        <div className={styles["database-button"]}>
+          <LargeIconButton
+            className={styles["database-button-faq"]}
+            text="FAQ Database"
+            type="primary"
+            // icon={<FAQIcon />}  // Replace <FAQIcon /> with your actual icon component
+            onClick={() => navigate(Path.SingleFAQ)} // Replace with your actual URL
+          />
+        </div>
+        <div className={styles["database-button"]}>
+          <LargeIconButton
+            className={styles["database-button-knowledge"]}
+            text="Knowledge Database"
+            type="primary"
+            // icon={<KnowledgeIcon />}  // Replace <KnowledgeIcon /> with your actual icon component
+            onClick={() => navigate(Path.LibKnowledge)} // Replace with your actual URL
+          />
+        </div>
+      </div>
+      <div className={styles["sign-out-button-section"]}>
         <IconButton
+          className={styles["go-back-button-bottom"]}
           text="Back to Chat"
           type="primary"
           onClick={() => {
             goChat();
           }}
         />
-      </div>
-      <div className={styles["devices-table"]}>
-        <table>
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Device Name</th>
-            </tr>
-          </thead>
-          <tbody>
-            {registeredDevices.map((device) => (
-              <tr key={device.id}>
-                <td>{device.id}</td>
-                <td>{device.name}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-      <div className={styles["sign-out-button"]}>
-        <IconButton text="Sign out" type="primary" onClick={handleSignOut} />
+        <IconButton
+          className={styles["sign-out-button-bottom"]}
+          text="Sign out"
+          type="primary"
+          onClick={handleSignOut}
+        />
       </div>
     </div>
   );

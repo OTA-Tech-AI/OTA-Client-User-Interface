@@ -11,7 +11,7 @@ import {
   editRecord,
   deleteRecord,
 } from "../../store/record-helper";
-import { ListPanel, showConfirm } from "../ui-lib";
+import { ListPanel } from "../ui-lib";
 import { SingleFAQModal, NewSingleFAQModal } from "./knowledgeConfig/singleFAQ";
 import { LIBRARY_ROUTES, REMOTE_OTA_BRAIN_HOST } from "../../constant";
 
@@ -87,7 +87,7 @@ export const UserRecord = () => {
   }, []);
 
   return (
-    <ListPanel title="FAQ Admin Panel">
+    <ListPanel title="FAQ Admin Panel" onClose={() => navigate(Path.UserPage)}>
       <IconButton
         text="Add New"
         type="primary"
@@ -117,7 +117,15 @@ export const UserRecord = () => {
                 <td className="record-question">{faq.question}</td>
                 <td className="record-answer">{faq.answer}</td>
                 <td className="record-status">
-                  {faq.status == 1 ? "Added" : "Pending"}
+                  <span
+                    className={`${styles["status-box"]} ${
+                      styles[
+                        faq.status === 1 ? "status-added" : "status-pending"
+                      ]
+                    }`}
+                  >
+                    {faq.status === 1 ? "Added" : "Pending"}
+                  </span>
                 </td>
                 <td className="record-operation">
                   <IconButton

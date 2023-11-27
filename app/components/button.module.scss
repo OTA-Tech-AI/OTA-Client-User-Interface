@@ -81,3 +81,20 @@
     margin-left: 5px;
   }
 }
+
+.large-icon-button {
+	margin: 0 20px; /* Space between buttons */
+	height: 30vh;
+	width: 20vw;
+}
+
+.large-icon-button-text {
+	font-size: 5vh;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	// white-space: nowrap;
+  
+	&:not(:first-child) {
+	  margin-left: 5px;
+	}
+  }

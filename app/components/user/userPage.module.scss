@@ -48,18 +48,70 @@
 		}
 	  }
 	}
+
+	.database-section {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		border: 2px solid #818181;
+		border-radius: 20px;
+		height: 45vh; /* Adjust height as needed */
+		width: 65vw;
+	  }
+	  
+	  .database-button {
+		margin: 0 20px; /* Space between buttons */
+		height: 20vh;
+		margin-bottom: 10vh;
+		/* Additional styling for the button, like size, can go here */
+	  }
+
+	  .database-button-faq {
+		margin: 0 20px; /* Space between buttons */
+		height: 30vh;
+		width: 20vw;
+		background-color: rgb(182, 182, 182);
+		border-color: rgb(163, 163, 163);
+		.icon-button-text{
+
+			font-size: 10vh;
+		}
+		/* Additional styling for the button, like size, can go here */
+	  }
+
+	  .database-button-knowledge {
+		margin: 0 20px; /* Space between buttons */
+		height: 30vh;
+		width: 20vw;
+		background-color: rgb(8, 179, 179);
+		border-color: rgb(1, 163, 163);
+		/* Additional styling for the button, like size, can go here */
+	  }
   
-	.sign-out-button {
+	.sign-out-button-section {
+
+	  display: flex;
+		// justify-content: center;
+	  align-items: center;
+
 	  align-self: flex-end;
 	  padding: 10px;
 	  color: #fff;  // White text color
 	  border: none;
 	  border-radius: 4px;
 	  cursor: pointer;
-  
-	  &:hover {
-		background-color: #555;  // Slightly lighter background on hover
-	  }
+	  margin-top: 5vh;
+
+	  .go-back-button-bottom {
+		margin-right: 2vw;
+		}
+
+		.sign-out-button-bottom{
+			background-color: #818181;
+			&:hover {
+				background-color: #555;  // Slightly lighter background on hover
+			}
+		}	
 	}
   }
   

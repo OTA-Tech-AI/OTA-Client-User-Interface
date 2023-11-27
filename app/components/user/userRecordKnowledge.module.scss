@@ -21,6 +21,25 @@
         color: darkblue; // Styling for text in 'record-answer' cells
     }
 
+	.status-box {
+		padding: 5px;
+		border-radius: 4px;
+		display: inline-block; /* To fit the content */
+	  }
+	  
+	  .status-added {
+		background-color: rgb(234, 255, 234);
+		border: 1px solid green;
+		color: darkgreen;
+	  }
+	  
+	  .status-pending {
+		background-color: rgb(241, 241, 213);
+		border: 1px solid rgb(240, 156, 1);
+		color: rgb(236, 131, 3);
+	  }
+
+
     table {
         width: 100%;
         border-collapse: collapse;

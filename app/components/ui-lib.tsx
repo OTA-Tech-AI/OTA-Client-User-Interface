@@ -9,6 +9,7 @@ import ConfirmIcon from "../icons/confirm.svg";
 import CancelIcon from "../icons/cancel.svg";
 import MaxIcon from "../icons/max.svg";
 import MinIcon from "../icons/min.svg";
+import LeftIcon from "../icons/left.svg";
 
 import Locale from "../locales";
 
@@ -171,6 +172,17 @@ export function ListPanel(props: ModalProps) {
     >
       <div className={styles["modal-header"]}>
         <div className={styles["modal-title"]}>{props.title}</div>
+        <div className={styles["modal-header-actions"]}>
+          <div
+            className={styles["modal-header-action"]}
+            onClick={props.onClose}
+          >
+            <LeftIcon />{" "}
+            <span>
+              <b>Back</b>
+            </span>
+          </div>
+        </div>
       </div>
       <div className={styles["modal-content"]}>{props.children}</div>
       <div className={styles["modal-footer"]}>
