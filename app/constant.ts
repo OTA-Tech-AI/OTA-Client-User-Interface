@@ -30,6 +30,7 @@ export enum Path {
   Login = "/login",
   UserPage = "/user",
   SingleFAQ = "/singlefaq",
+  LibKnowledge = "/libknowledge",
 }
 
 export enum ApiPath {
@@ -111,8 +112,15 @@ export const firebaseConfig = {
 };
 
 export const LIBRARY_ROUTES = {
-  getData: "api/libfaq",
-  submitNewData: "api/libfaq/submit",
-  editData: "api/libfaq/edit",
-  deleteData: "api/libfaq/delete",
+  /* library FAQ */
+  getFAQData: "api/libfaq",
+  submitNewFAQData: "api/libfaq/submit",
+  editFAQData: "api/libfaq/edit",
+  deleteFAQData: "api/libfaq/delete",
+
+  /* library general knowledge */
+  getKnowledgeData: "api/libknowledge",
+  submitNewKnowledgeData: "api/libknowledge/submit",
+  editKnowledgeData: "api/libknowledge/edit",
+  deleteKnowledgeData: "api/libknowledge/delete",
 };

@@ -1,26 +1,26 @@
-import styles from "./singleFAQ.module.scss";
+import styles from "./generalKnowledge.module.scss";
 import { IconButton } from "../../button";
 import { userAuthStore } from "../../../store/userAuth";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { FAQSet } from "../../../store/record-helper";
+import { KnowledgeSet } from "../../../store/record-helper";
 import { List, ListItem, Modal } from "../../ui-lib";
 import Locale from "../../../locales";
 import ConfirmIcon from "../../../icons/confirm.svg";
 import CancelIcon from "../../../icons/cancel.svg";
 import DeleteIcon from "../../../icons/delete.svg";
 
-export function SingleFAQModal(props: {
+export function GeneralKnowledgeModal(props: {
   onClose: () => void;
-  faq: FAQSet;
-  editHandler: (oldFaq: FAQSet, newFaq: FAQSet) => void;
-  deleteHandler: (faq: FAQSet) => void;
+  data: KnowledgeSet;
+  editHandler: (oldData: KnowledgeSet, newData: KnowledgeSet) => void;
+  deleteHandler: (data: KnowledgeSet) => void;
 }) {
-  const originQuestion = props.faq.question;
-  const originAnswer = props.faq.answer;
+  const originTitle = props.data.title;
+  const originKnowledge = props.data.knowledge;
   const [inputData, setInputData] = useState({
-    question: props.faq.question,
-    answer: props.faq.answer,
+    title: props.data.title,
+    knowledge: props.data.knowledge,
   });
 
   const handleInputChange = (e: any) => {
@@ -28,33 +28,33 @@ export function SingleFAQModal(props: {
   };
 
   const handleEdit = () => {
-    if (inputData.question.trim() === "" || inputData.answer.trim() === "") {
-      alert("Please fill in both question and answer fields.");
+    if (inputData.title.trim() === "" || inputData.knowledge.trim() === "") {
+      alert("Please fill in both title and knowledge.");
       return; // Stop the function from proceeding further
     }
-    const newFaq = {
-      index: props.faq.index,
-      question: inputData.question,
-      answer: inputData.answer,
+    const newData = {
+      index: props.data.index,
+      title: inputData.title,
+      knowledge: inputData.knowledge,
       status: 0,
     };
-    props.editHandler(props.faq, newFaq);
+    props.editHandler(props.data, newData);
     props.onClose();
   };
 
   const handleDelete = () => {
-    props.deleteHandler(props.faq);
+    props.deleteHandler(props.data);
     props.onClose();
   };
 
   return (
     <div className="modal-mask">
       <Modal
-        title="Single FAQ"
+        title="General Knowledge / Information"
         onClose={props.onClose}
         actions={
-          inputData.question == originQuestion &&
-          inputData.answer == originAnswer
+          inputData.title == originTitle &&
+          inputData.knowledge == originKnowledge
             ? [
                 <IconButton
                   type="danger"
@@ -105,19 +105,19 @@ export function SingleFAQModal(props: {
         }
       >
         <List>
-          <ListItem title="Question">
+          <ListItem title="Title">
             <textarea
-              name="question"
-              className={styles["faq-input"]}
-              value={inputData.question}
+              name="title"
+              className={styles["data-input"]}
+              value={inputData.title}
               onChange={handleInputChange}
             />
           </ListItem>
-          <ListItem title="Answer">
+          <ListItem title="Knowledge / Information">
             <textarea
-              name="answer"
-              className={`${styles["faq-input"]} ${styles["answer-input"]}`}
-              value={inputData.answer}
+              name="knowledge"
+              className={`${styles["data-input"]} ${styles["knowledge-input"]}`}
+              value={inputData.knowledge}
               onChange={handleInputChange}
             />
           </ListItem>
@@ -127,35 +127,35 @@ export function SingleFAQModal(props: {
   );
 }
 
-export function NewSingleFAQModal(props: {
+export function NewGeneralKnowledgeModal(props: {
   onClose: () => void;
-  submitHandler: (faq: { question: string; answer: string }) => void;
+  submitHandler: (data: { title: string; knowledge: string }) => void;
 }) {
-  const [inputData, setInputData] = useState({ question: "", answer: "" });
+  const [inputData, setInputData] = useState({ title: "", knowledge: "" });
   const handleInputChange = (e: any) => {
     setInputData({ ...inputData, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = () => {
-    if (inputData.question.trim() === "" || inputData.answer.trim() === "") {
-      alert("Please fill in both question and answer fields.");
+    if (inputData.title.trim() === "" || inputData.knowledge.trim() === "") {
+      alert("Please fill in both title and knowledge fields.");
       return; // Stop the function from proceeding further
     }
-    const newFaq = {
-      question: inputData.question,
-      answer: inputData.answer,
+    const newData = {
+      title: inputData.title,
+      knowledge: inputData.knowledge,
     };
-    props.submitHandler(newFaq);
+    props.submitHandler(newData);
     props.onClose();
   };
 
   return (
     <div className="modal-mask">
       <Modal
-        title="Single FAQ"
+        title="General library Knowledge / Information"
         onClose={props.onClose}
         actions={
-          inputData.question == "" || inputData.answer == ""
+          inputData.title == "" || inputData.knowledge == ""
             ? [
                 <IconButton
                   text={Locale.UI.Cancel}
@@ -188,21 +188,21 @@ export function NewSingleFAQModal(props: {
         }
       >
         <List>
-          <ListItem title="Question">
+          <ListItem title="Title">
             <textarea
-              name="question"
-              className={styles["faq-input"]}
-              placeholder="User's question to OTA"
-              value={inputData.question}
+              name="title"
+              className={styles["data-input"]}
+              placeholder="Your title"
+              value={inputData.title}
               onChange={handleInputChange}
             />
           </ListItem>
-          <ListItem title="Answer">
+          <ListItem title="Knowledge">
             <textarea
-              name="answer"
-              className={`${styles["faq-input"]} ${styles["answer-input"]}`}
-              placeholder="The answer you want OTA to learn"
-              value={inputData.answer}
+              name="knowledge"
+              className={`${styles["data-input"]} ${styles["knowledge-input"]}`}
+              placeholder="The knowledge you want OTA to learn"
+              value={inputData.knowledge}
               onChange={handleInputChange}
             />
           </ListItem>

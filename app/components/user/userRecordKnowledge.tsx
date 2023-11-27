@@ -5,35 +5,38 @@ import { useNavigate } from "react-router-dom";
 import { Path } from "../../constant";
 import { useEffect, useState } from "react";
 import {
-  FAQSet,
+  KnowledgeSet,
   fetchCurrentRecord,
   submitNewRecord,
   editRecord,
   deleteRecord,
 } from "../../store/record-helper";
-import { ListPanel, showConfirm } from "../ui-lib";
-import { SingleFAQModal, NewSingleFAQModal } from "./knowledgeConfig/singleFAQ";
+import { ListPanel } from "../ui-lib";
+import {
+  GeneralKnowledgeModal,
+  NewGeneralKnowledgeModal,
+} from "./knowledgeConfig/generalKnowledge";
 import { LIBRARY_ROUTES, REMOTE_OTA_BRAIN_HOST } from "../../constant";
 
-const FETCH_RECORD_PATH = `${REMOTE_OTA_BRAIN_HOST}/${LIBRARY_ROUTES.getFAQData}`;
-const SUBMIT_NEW_RECORD_PATH = `${REMOTE_OTA_BRAIN_HOST}/${LIBRARY_ROUTES.submitNewFAQData}`;
-const EDIT_RECORD_PATH = `${REMOTE_OTA_BRAIN_HOST}/${LIBRARY_ROUTES.editFAQData}`;
-const DEELTE_RECORD_PATH = `${REMOTE_OTA_BRAIN_HOST}/${LIBRARY_ROUTES.deleteFAQData}`;
+const FETCH_RECORD_PATH = `${REMOTE_OTA_BRAIN_HOST}/${LIBRARY_ROUTES.getKnowledgeData}`;
+const SUBMIT_NEW_RECORD_PATH = `${REMOTE_OTA_BRAIN_HOST}/${LIBRARY_ROUTES.submitNewKnowledgeData}`;
+const EDIT_RECORD_PATH = `${REMOTE_OTA_BRAIN_HOST}/${LIBRARY_ROUTES.editKnowledgeData}`;
+const DEELTE_RECORD_PATH = `${REMOTE_OTA_BRAIN_HOST}/${LIBRARY_ROUTES.deleteKnowledgeData}`;
 
-export const UserRecord = () => {
+export const UserRecordKnowledge = () => {
   const access = userAuthStore();
   const navigate = useNavigate();
-  const [faqs, setFaqs] = useState<FAQSet[]>([]);
+  const [knowledges, setKnowledges] = useState<KnowledgeSet[]>([]);
   const [FAQModalIndex, setFAQModalIndex] = useState(-1);
   const [showNewFAQModal, setshowNewFAQModal] = useState(false);
 
   const fetchData = async () => {
-    const data = await fetchCurrentRecord<FAQSet>(FETCH_RECORD_PATH);
-    setFaqs(data);
+    const data = await fetchCurrentRecord<KnowledgeSet>(FETCH_RECORD_PATH);
+    setKnowledges(data);
   };
 
   // Handle form submission
-  const handleSubmit = (newData: { question: string; answer: string }) => {
+  const handleSubmit = (newData: { title: string; knowledge: string }) => {
     // Add logic to handle submission here
     submitNewRecord(newData, SUBMIT_NEW_RECORD_PATH)
       .then((response: Response) => {
@@ -52,8 +55,8 @@ export const UserRecord = () => {
       });
   };
 
-  const handleEdit = (oldData: FAQSet, newData: FAQSet) => {
-    editRecord<FAQSet>(oldData, newData, EDIT_RECORD_PATH)
+  const handleEdit = (oldData: KnowledgeSet, newData: KnowledgeSet) => {
+    editRecord<KnowledgeSet>(oldData, newData, EDIT_RECORD_PATH)
       .then((response: Response) => {
         if (response.status === 200) {
           // Fetch the updated data
@@ -67,8 +70,8 @@ export const UserRecord = () => {
       });
   };
 
-  const handleDelete = (data: FAQSet) => {
-    deleteRecord<FAQSet>(data, DEELTE_RECORD_PATH)
+  const handleDelete = (data: KnowledgeSet) => {
+    deleteRecord<KnowledgeSet>(data, DEELTE_RECORD_PATH)
       .then((response: Response) => {
         if (response.status === 200) {
           // Fetch the updated data
@@ -87,7 +90,7 @@ export const UserRecord = () => {
   }, []);
 
   return (
-    <ListPanel title="FAQ Admin Panel">
+    <ListPanel title="Knowledge Admin Panel">
       <IconButton
         text="Add New"
         type="primary"
@@ -96,7 +99,7 @@ export const UserRecord = () => {
         }}
       />
       {showNewFAQModal && (
-        <NewSingleFAQModal
+        <NewGeneralKnowledgeModal
           onClose={() => setshowNewFAQModal(false)}
           submitHandler={handleSubmit}
         />
@@ -105,19 +108,21 @@ export const UserRecord = () => {
         <table>
           <thead>
             <tr>
-              <th className="record-question">Question</th>
-              <th className="record-answer">Answer</th>
+              <th className="record-title">Title</th>
+              <th className="record-knowledge">Knowledge / Information</th>
               <th className="record-status">Status</th>
               <th className="record-operation"></th>
             </tr>
           </thead>
           <tbody>
-            {faqs.map((faq, index) => (
+            {knowledges.map((knowledge, index) => (
               <tr key={index}>
-                <td className="record-question">{faq.question}</td>
-                <td className="record-answer">{faq.answer}</td>
+                <td className="record-title">
+                  <b>{knowledge.title}</b>
+                </td>
+                <td className="record-knowledge">{knowledge.knowledge}</td>
                 <td className="record-status">
-                  {faq.status == 1 ? "Added" : "Pending"}
+                  {knowledge.status == 1 ? "Added" : "Pending"}
                 </td>
                 <td className="record-operation">
                   <IconButton
@@ -128,9 +133,9 @@ export const UserRecord = () => {
                     }}
                   />
                   {FAQModalIndex == index && (
-                    <SingleFAQModal
+                    <GeneralKnowledgeModal
                       onClose={() => setFAQModalIndex(-1)}
-                      faq={faq}
+                      data={knowledge}
                       editHandler={handleEdit}
                       deleteHandler={handleDelete}
                     />

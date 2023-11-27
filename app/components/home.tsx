@@ -29,6 +29,7 @@ import { useAppConfig } from "../store/config";
 import { LoginPage } from "./login";
 import { UserPage } from "./user/userPage";
 import { UserRecord } from "./user/userRecord";
+import { UserRecordKnowledge } from "./user/userRecordKnowledge";
 import { getClientConfig } from "../config/client";
 import { api } from "../client/api";
 import { useAccessStore, useChatStore } from "../store";
@@ -133,6 +134,7 @@ function Screen() {
     CHAT = "CHAT",
     USERPAGE = "USERPAGE",
     SINGLEFAQ = "SINGLEFAQ",
+    LIBKNOWLEDGE = "LIBKNOWLEDGE",
   }
   const config = useAppConfig();
   const location = useLocation();
@@ -141,6 +143,7 @@ function Screen() {
   const isLogin = location.pathname === Path.Login;
   const isUserPage = location.pathname === Path.UserPage;
   const isSingleFAQ = location.pathname === Path.SingleFAQ;
+  const isLibKnowledge = location.pathname === Path.LibKnowledge;
   const isMobileScreen = useMobileScreen();
   const shouldTightBorder =
     getClientConfig()?.isApp || (config.tightBorder && !isMobileScreen);
@@ -156,6 +159,8 @@ function Screen() {
     currentAppState = AppState.USERPAGE;
   } else if (isSingleFAQ) {
     currentAppState = AppState.SINGLEFAQ;
+  } else if (isLibKnowledge) {
+    currentAppState = AppState.LIBKNOWLEDGE;
   }
 
   return (
@@ -191,6 +196,8 @@ function Screen() {
             return <UserPage />;
           case AppState.SINGLEFAQ:
             return <UserRecord />;
+          case AppState.LIBKNOWLEDGE:
+            return <UserRecordKnowledge />;
           // return <div></div>
           // ... Handle more cases as needed
           default:

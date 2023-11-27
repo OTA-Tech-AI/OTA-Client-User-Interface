@@ -1,6 +1,4 @@
-import { LIBRARY_ROUTES } from "../constant";
 import { useChatStore, ChatMessage, createMessage } from ".";
-import { REMOTE_OTA_BRAIN_HOST } from "../constant";
 
 export interface FAQSet {
   index: number;
@@ -9,36 +7,38 @@ export interface FAQSet {
   status: number;
 }
 
-export async function fetchCurrentRecord(): Promise<FAQSet[]> {
+export interface KnowledgeSet {
+  index: number;
+  title: string;
+  knowledge: string;
+  status: number;
+}
+
+export async function fetchCurrentRecord<T>(path: string): Promise<T[]> {
   try {
-    const response = await fetch(
-      `${REMOTE_OTA_BRAIN_HOST}/${LIBRARY_ROUTES.getData}`,
-    );
+    const response = await fetch(path);
     if (!response.ok) {
       throw new Error("Failed to fetch User FAQ configuration.");
     }
-    return response.json();
+    return response.json() as Promise<T[]>;
   } catch (error) {
     console.error("There was a problem with the fetch operation:", error);
     return []; // Return an empty array in case of error
   }
 }
 
-export async function submitNewRecord(data: {
-  question: string;
-  answer: string;
-}): Promise<Response> {
+export async function submitNewRecord(
+  data: any,
+  path: string,
+): Promise<Response> {
   try {
-    const response = await fetch(
-      `${REMOTE_OTA_BRAIN_HOST}/${LIBRARY_ROUTES.submitNewData}`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
+    const response = await fetch(path, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
       },
-    );
+      body: JSON.stringify(data),
+    });
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
@@ -50,21 +50,19 @@ export async function submitNewRecord(data: {
   }
 }
 
-export async function editRecord(
-  oldData: FAQSet,
-  newData: FAQSet,
+export async function editRecord<T>(
+  oldData: T,
+  newData: T,
+  path: string,
 ): Promise<Response> {
   try {
-    const response = await fetch(
-      `${REMOTE_OTA_BRAIN_HOST}/${LIBRARY_ROUTES.editData}`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ old_data: oldData, new_data: newData }),
+    const response = await fetch(path, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
       },
-    );
+      body: JSON.stringify({ old_data: oldData, new_data: newData }),
+    });
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
@@ -76,18 +74,18 @@ export async function editRecord(
   }
 }
 
-export async function deleteRecord(data: FAQSet): Promise<Response> {
+export async function deleteRecord<T>(
+  data: T,
+  path: string,
+): Promise<Response> {
   try {
-    const response = await fetch(
-      `${REMOTE_OTA_BRAIN_HOST}/${LIBRARY_ROUTES.deleteData}`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
+    const response = await fetch(path, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
       },
-    );
+      body: JSON.stringify(data),
+    });
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
