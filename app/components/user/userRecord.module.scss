@@ -18,7 +18,12 @@
     }
 
     .record-answer {
-        color: darkblue; // Styling for text in 'record-answer' cells
+        color: rgb(0, 0, 72); // Styling for text in 'record-answer' cells
+		max-width: 55vw;
+    }
+
+	.record-status {
+		width: 10vw;
     }
 
 	.status-box {

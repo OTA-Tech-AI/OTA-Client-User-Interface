@@ -115,8 +115,8 @@ export const UserRecord = () => {
             {faqs.map((faq, index) => (
               <tr key={index}>
                 <td className="record-question">{faq.question}</td>
-                <td className="record-answer">{faq.answer}</td>
-                <td className="record-status">
+                <td className={styles["record-answer"]}>{faq.answer}</td>
+                <td className={styles["record-status"]}>
                   <span
                     className={`${styles["status-box"]} ${
                       styles[

@@ -1,4 +1,4 @@
-import styles from "./userRecord.module.scss";
+import styles from "./userRecordKnowledge.module.scss";
 import { IconButton } from "../button";
 import { userAuthStore } from "../../store/userAuth";
 import { useNavigate } from "react-router-dom";
@@ -123,8 +123,10 @@ export const UserRecordKnowledge = () => {
                 <td className="record-title">
                   <b>{knowledge.title}</b>
                 </td>
-                <td className="record-knowledge">{knowledge.knowledge}</td>
-                <td className="record-status">
+                <td className={styles["record-knowledge"]}>
+                  {knowledge.knowledge}
+                </td>
+                <td className={styles["record-status"]}>
                   <span
                     className={`${styles["status-box"]} ${
                       styles[

@@ -13,12 +13,17 @@
         width: calc(100% - 40px);
     }
 
-	.record-question {
+	.record-title {
         color: darkred; // Styling for text in 'record-question' cells
     }
 
-    .record-answer {
-        color: darkblue; // Styling for text in 'record-answer' cells
+    .record-knowledge {
+        color: rgb(0, 0, 72); // Styling for text in 'record-answer' cells
+		max-width: 55vw;
+    }
+
+	.record-status {
+		width: 10vw;
     }
 
 	.status-box {
