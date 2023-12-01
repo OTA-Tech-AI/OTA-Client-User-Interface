@@ -56,18 +56,18 @@
 		border: 2px solid #818181;
 		border-radius: 20px;
 		height: 45vh; /* Adjust height as needed */
-		width: 65vw;
+		width: 70vw;
 	  }
 	  
 	  .database-button {
-		margin: 0 20px; /* Space between buttons */
+		margin: 0 0px; /* Space between buttons */
 		height: 20vh;
 		margin-bottom: 10vh;
 		/* Additional styling for the button, like size, can go here */
 	  }
 
 	  .database-button-faq {
-		margin: 0 20px; /* Space between buttons */
+		margin: 0 10px; /* Space between buttons */
 		height: 30vh;
 		width: 20vw;
 		background-color: rgb(182, 182, 182);
@@ -80,10 +80,19 @@
 	  }
 
 	  .database-button-knowledge {
-		margin: 0 20px; /* Space between buttons */
+		margin: 0 10px; /* Space between buttons */
 		height: 30vh;
-		width: 20vw;
+		width: 23vw;
 		background-color: rgb(8, 179, 179);
+		border-color: rgb(1, 163, 163);
+		/* Additional styling for the button, like size, can go here */
+	  }
+
+	  .database-button-prompt {
+		margin: 0 10px; /* Space between buttons */
+		height: 30vh;
+		width: 13vw;
+		background-color: rgb(9, 126, 13);
 		border-color: rgb(1, 163, 163);
 		/* Additional styling for the button, like size, can go here */
 	  }

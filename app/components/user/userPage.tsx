@@ -4,7 +4,6 @@ import { userAuthStore } from "../../store/userAuth";
 import { useNavigate } from "react-router-dom";
 import { Path } from "../../constant";
 import { useEffect } from "react";
-import { UserRecord } from "./userRecord";
 
 export const UserPage = () => {
   const access = userAuthStore();
@@ -61,6 +60,15 @@ export const UserPage = () => {
             type="primary"
             // icon={<KnowledgeIcon />}  // Replace <KnowledgeIcon /> with your actual icon component
             onClick={() => navigate(Path.LibKnowledge)} // Replace with your actual URL
+          />
+        </div>
+        <div className={styles["database-button"]}>
+          <LargeIconButton
+            className={styles["database-button-prompt"]}
+            text="Chatbot Prompt"
+            type="primary"
+            // icon={<KnowledgeIcon />}  // Replace <KnowledgeIcon /> with your actual icon component
+            onClick={() => navigate(Path.UserPrompt)} // Replace with your actual URL
           />
         </div>
       </div>

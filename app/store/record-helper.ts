@@ -96,3 +96,59 @@ export async function deleteRecord<T>(
     return Promise.reject(error);
   }
 }
+
+export async function fetchCurrentSystemPrompt(path: string): Promise<string> {
+  try {
+    const response = await fetch(path);
+    if (!response.ok) {
+      throw new Error("Failed to fetch user system prompt.");
+    }
+    return response.json();
+  } catch (error) {
+    console.error("There was a problem with the fetch operation:", error);
+    return "";
+  }
+}
+
+export async function editSystemPrompt(
+  data: { prompt: string },
+  path: string,
+): Promise<Response> {
+  try {
+    const response = await fetch(path, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    console.log("Success:", response);
+    return response;
+  } catch (error) {
+    console.error("Error deleting record:", error);
+    return Promise.reject(error);
+  }
+}
+
+export async function resetSystemPrompt(path: string): Promise<Response> {
+  try {
+    const response = await fetch(path, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(""),
+    });
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    console.log("Success:", response);
+    return response;
+  } catch (error) {
+    console.error("Error deleting record:", error);
+    return Promise.reject(error);
+  }
+}

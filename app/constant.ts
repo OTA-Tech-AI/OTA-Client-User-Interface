@@ -31,6 +31,7 @@ export enum Path {
   UserPage = "/user",
   SingleFAQ = "/singlefaq",
   LibKnowledge = "/libknowledge",
+  UserPrompt = "/userprompteditor",
 }
 
 export enum ApiPath {
@@ -123,4 +124,9 @@ export const LIBRARY_ROUTES = {
   submitNewKnowledgeData: "api/libknowledge/submit",
   editKnowledgeData: "api/libknowledge/edit",
   deleteKnowledgeData: "api/libknowledge/delete",
+
+  /* system prompt */
+  getPrompt: "api/sysprompt",
+  editPrompt: "api/sysprompt/edit",
+  resetPrompt: "api/sysprompt/reset",
 };

@@ -30,9 +30,10 @@ import { LoginPage } from "./login";
 import { UserPage } from "./user/userPage";
 import { UserRecord } from "./user/userRecord";
 import { UserRecordKnowledge } from "./user/userRecordKnowledge";
+import { UserPromptEditor } from "./user/userPromptEditor";
 import { getClientConfig } from "../config/client";
 import { api } from "../client/api";
-import { useAccessStore, useChatStore } from "../store";
+import { useAccessStore } from "../store";
 import { userAuthStore } from "../store/userAuth";
 
 export function Loading(props: { noLogo?: boolean }) {
@@ -135,6 +136,7 @@ function Screen() {
     USERPAGE = "USERPAGE",
     SINGLEFAQ = "SINGLEFAQ",
     LIBKNOWLEDGE = "LIBKNOWLEDGE",
+    USERPROMPT = "USERPROMPT",
   }
   const config = useAppConfig();
   const location = useLocation();
@@ -144,6 +146,7 @@ function Screen() {
   const isUserPage = location.pathname === Path.UserPage;
   const isSingleFAQ = location.pathname === Path.SingleFAQ;
   const isLibKnowledge = location.pathname === Path.LibKnowledge;
+  const isUserPrompt = location.pathname === Path.UserPrompt;
   const isMobileScreen = useMobileScreen();
   const shouldTightBorder =
     getClientConfig()?.isApp || (config.tightBorder && !isMobileScreen);
@@ -161,6 +164,8 @@ function Screen() {
     currentAppState = AppState.SINGLEFAQ;
   } else if (isLibKnowledge) {
     currentAppState = AppState.LIBKNOWLEDGE;
+  } else if (isUserPrompt) {
+    currentAppState = AppState.USERPROMPT;
   }
 
   return (
@@ -198,6 +203,8 @@ function Screen() {
             return <UserRecord />;
           case AppState.LIBKNOWLEDGE:
             return <UserRecordKnowledge />;
+          case AppState.USERPROMPT:
+            return <UserPromptEditor />;
           // return <div></div>
           // ... Handle more cases as needed
           default:
