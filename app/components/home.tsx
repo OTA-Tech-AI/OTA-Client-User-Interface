@@ -26,8 +26,10 @@ import {
 } from "react-router-dom";
 import { SideBar } from "./sidebar";
 import { useAppConfig } from "../store/config";
-import { LoginPage } from "./login";
+import { LoginPage } from "./accounts/login";
 import { UserPage } from "./user/userPage";
+import { RegisterAccountsPage } from "./accounts/registerAccounts";
+import { PasswordRecoveryPage } from "./accounts/passwordRecovery";
 import { getClientConfig } from "../config/client";
 import { api } from "../client/api";
 import { useAccessStore, useChatStore } from "../store";
@@ -131,13 +133,18 @@ function Screen() {
     HOME = "HOME",
     CHAT = "CHAT",
     USERPAGE = "USERPAGE",
+    REGISTERACCOUNTS = "REGISTERACCOUNTS",
+    PASSWORDRECOVERY = "PASSWORDRECOVERY",
   }
+
   const config = useAppConfig();
   const location = useLocation();
   const isHome = location.pathname === Path.Home;
   //   const isAuth = location.pathname === Path.Auth;
   const isLogin = location.pathname === Path.Login;
   const isUserPage = location.pathname === Path.UserPage;
+  const isRegisterAccounts = location.pathname === Path.RegisterAccounts;
+  const isPasswordrecovery = location.pathname === Path.PasswordRecovery;
   const isMobileScreen = useMobileScreen();
   const shouldTightBorder =
     getClientConfig()?.isApp || (config.tightBorder && !isMobileScreen);
@@ -151,6 +158,10 @@ function Screen() {
     currentAppState = AppState.LOGIN;
   } else if (isUserPage) {
     currentAppState = AppState.USERPAGE;
+  } else if (isRegisterAccounts) {
+    currentAppState = AppState.REGISTERACCOUNTS;
+  } else if (isPasswordrecovery) {
+    currentAppState = AppState.PASSWORDRECOVERY;
   }
 
   return (
@@ -184,6 +195,10 @@ function Screen() {
             );
           case AppState.USERPAGE:
             return <UserPage />;
+          case AppState.REGISTERACCOUNTS:
+            return <RegisterAccountsPage />;
+          case AppState.PASSWORDRECOVERY:
+            return <PasswordRecoveryPage />;
           // return <div></div>
           // ... Handle more cases as needed
           default:

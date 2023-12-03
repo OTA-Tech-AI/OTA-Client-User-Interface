@@ -24,6 +24,8 @@ export enum Path {
   Auth = "/auth",
   Login = "/login",
   UserPage = "/user",
+  RegisterAccounts = "/registeraccount",
+  PasswordRecovery = "/passwordrecovery",
 }
 
 export enum ApiPath {

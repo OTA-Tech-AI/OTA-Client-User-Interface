@@ -3,6 +3,9 @@ import {
   signInWithEmailAndPassword,
   signOut,
   onAuthStateChanged,
+  sendEmailVerification,
+  createUserWithEmailAndPassword,
+  sendPasswordResetEmail,
 } from "firebase/auth";
 import { DEFAULT_API_HOST, StoreKey } from "../constant";
 import { getClientConfig } from "../config/client";
@@ -32,18 +35,23 @@ export const userAuthStore = createPersistStore(
   (set, get) => ({
     async signInWithFirebase(email: string, password: string) {
       try {
-        let auth = getAuth();
+        let auth = await getAuth();
         await signInWithEmailAndPassword(auth, email, password);
-        auth = getAuth();
+        auth = await getAuth();
+
         if (!!auth.currentUser && !!auth.currentUser.uid) {
+          if (!auth.currentUser.emailVerified) {
+            await signOut(auth);
+            return 2;
+          }
           set(() => ({ uid: auth.currentUser?.uid }));
         }
-        firebaseListenerSetup();
-
+        await firebaseListenerSetup();
         console.log(
           "[Auth] user sign in with Firebase successfully, email: ",
           get().email,
         );
+        return 1;
         // User signed in successfully
       } catch (error) {
         console.error("[Auth] Failed to sign in with Firebase, email: ", email);
@@ -65,6 +73,57 @@ export const userAuthStore = createPersistStore(
       } catch (error) {
         console.error("[Auth] Failed to sign out from Firebase");
         throw error;
+      }
+    },
+
+    async signUpWithFireBase(email: string, password: string) {
+      try {
+        const auth = await getAuth();
+        await createUserWithEmailAndPassword(auth, email, password).then(
+          async (userCredential) => {
+            const user = userCredential.user;
+            if (user != null) {
+              await sendEmailVerification(user);
+              await signOut(auth);
+              console.log("successffully registered");
+            }
+          },
+        );
+      } catch (error) {
+        console.error("Error registering new user: ", error);
+        throw error;
+      }
+    },
+
+    async passwordRecoveryEmailFromFirebase(email: string) {
+      try {
+        const auth = await getAuth();
+        await sendPasswordResetEmail(auth, email).then(() => {
+          console.log("successffully sent recovery email to: ", email);
+        });
+      } catch (error) {
+        console.error("Error registering new user: ", error);
+      }
+    },
+
+    async resendVerificationEmailFromFirebase(email: string, password: string) {
+      try {
+        // Sign in the user
+        const auth = await getAuth();
+        await signInWithEmailAndPassword(auth, email, password).then(
+          async (userCredential) => {
+            const user = userCredential.user;
+            if (user != null) {
+              await sendEmailVerification(user);
+              await signOut(auth);
+              console.log(`Resend successfully to email: ${email}`);
+            }
+          },
+        );
+        // Notify the user that the email has been sent
+      } catch (error) {
+        console.error("Error: ", error);
+        // Handle errors (e.g., user not found, wrong password, etc.)
       }
     },
 

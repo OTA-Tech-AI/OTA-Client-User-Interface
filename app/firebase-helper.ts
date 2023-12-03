@@ -315,7 +315,7 @@ export const handleChildRemoved = (snapshot: any) => {
   // Handle the child removal here...
 };
 
-export function firebaseListenerSetup() {
+export async function firebaseListenerSetup() {
   if (!userAuthStore.getState().isAuthorized()) {
     return;
   }
