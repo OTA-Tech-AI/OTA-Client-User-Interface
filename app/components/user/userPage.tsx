@@ -21,7 +21,6 @@ export const UserPage = () => {
   const handleSignOut = async () => {
     try {
       await access.signOutFromFirebase();
-      // back to sign in page
       navigate(Path.Login);
     } catch (err) {
       console.error("Sign-out Failed: ", err);
@@ -29,12 +28,9 @@ export const UserPage = () => {
   };
 
   useEffect(() => {
-    const listenerTimer = setTimeout(() => {
-      if (!access.isAuthorized()) {
-        navigate(Path.Login);
-      }
-    }, 5000);
-    return () => clearTimeout(listenerTimer);
+    if (!access.isAuthorized()) {
+      navigate(Path.Login);
+    }
   }, []);
 
   return (

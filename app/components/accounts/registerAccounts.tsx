@@ -52,8 +52,6 @@ export function RegisterAccountsPage() {
       await access.signUpWithFireBase(email, password).then(() => {
         setRegistered(true);
       });
-      //   console.log("Sign-in Success! email: ", access.email);
-      //   goChat();
     } catch (err: any) {
       if (err.code == "auth/email-already-in-use") {
         setError(`${email} already in use, please try another email address.`);
@@ -75,13 +73,9 @@ export function RegisterAccountsPage() {
     if (getClientConfig()?.isApp) {
       navigate(Path.Settings);
     }
-
-    const listenerTimer = setTimeout(() => {
-      if (access.isAuthorized()) {
-        navigate(Path.UserPage);
-      }
-    }, 1000);
-    return () => clearTimeout(listenerTimer);
+    if (access.isAuthorized()) {
+      navigate(Path.UserPage);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -176,7 +170,7 @@ export function RegisterAccountsPage() {
 
           <div className={styles["auth-actions"]}>
             <span className={styles["auth-tips"]}>
-              Please verify your email before signing in
+              Please verify your email inbox / spam
             </span>
             <IconButton
               className={styles["button"]}

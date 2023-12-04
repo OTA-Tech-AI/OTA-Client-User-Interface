@@ -33,26 +33,33 @@ export const userAuthStore = createPersistStore(
   { ...DEFAULT_ACCESS_STATE },
 
   (set, get) => ({
-    async signInWithFirebase(email: string, password: string) {
+    async signInWithFirebase(email: string, password: string): Promise<number> {
       try {
         let auth = await getAuth();
-        await signInWithEmailAndPassword(auth, email, password);
-        auth = await getAuth();
-
-        if (!!auth.currentUser && !!auth.currentUser.uid) {
-          if (!auth.currentUser.emailVerified) {
-            await signOut(auth);
-            return 2;
-          }
-          set(() => ({ uid: auth.currentUser?.uid }));
-        }
-        await firebaseListenerSetup();
-        console.log(
-          "[Auth] user sign in with Firebase successfully, email: ",
-          get().email,
+        const userCredential = await signInWithEmailAndPassword(
+          auth,
+          email,
+          password,
         );
-        return 1;
-        // User signed in successfully
+        const user = userCredential.user;
+        if (!!user && !!user.uid) {
+          if (!user.emailVerified) {
+            await signOut(auth);
+            return 2; // Email not verified
+          }
+          console.log(
+            "[Auth] User signed in with Firebase successfully, email: ",
+            email,
+          );
+          this.updateEmail(email);
+          this.updatePassword(password);
+          return 1; // Successful sign in
+        } else {
+          // This else block might not be necessary because if user or user.uid is not present,
+          // an error would be thrown by signInWithEmailAndPassword
+          console.log("[Auth] No user data returned from Firebase");
+          return 0; // No user data
+        }
       } catch (error) {
         console.error("[Auth] Failed to sign in with Firebase, email: ", email);
         throw error;
@@ -63,11 +70,7 @@ export const userAuthStore = createPersistStore(
       try {
         const auth = getAuth();
         await signOut(auth);
-        firebaseListenerTeardown();
-
-        // User signed out successfully
-        set(() => ({ email: "", password: "", uid: "" }));
-        console.log("[Auth] Signed out successfully, email: ", get().email);
+        console.log("[Auth] Signed out successfully!");
         // Clear local state if necessary
         set({ ...DEFAULT_ACCESS_STATE });
       } catch (error) {
@@ -85,7 +88,7 @@ export const userAuthStore = createPersistStore(
             if (user != null) {
               await sendEmailVerification(user);
               await signOut(auth);
-              console.log("successffully registered");
+              console.log("User Registration Succeeded! Email: ", email);
             }
           },
         );
@@ -138,10 +141,21 @@ export const userAuthStore = createPersistStore(
     },
 
     isAuthorized() {
-      const auth = getAuth();
-      const isFirebaseUserSignedIn = auth.currentUser != null;
-      //   console.log(auth, auth.currentUser, isFirebaseUserSignedIn)
-      return isFirebaseUserSignedIn;
+      return get().uid !== "";
+    },
+
+    setupAuthStateListener() {
+      return onAuthStateChanged(getAuth(), (user) => {
+        if (user) {
+          console.log("[Auth] State: User Login Detected: ", user.uid);
+          set(() => ({ uid: user.uid }));
+          firebaseListenerSetup();
+        } else {
+          console.log("[Auth] State: Not Login.");
+          set(() => ({ email: "", password: "", uid: "" }));
+          firebaseListenerTeardown();
+        }
+      });
     },
   }),
   {

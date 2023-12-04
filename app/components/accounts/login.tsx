@@ -17,13 +17,11 @@ export function LoginPage() {
 
   const [error, setError] = useState("");
   const [canResendVerification, setcanResendVerification] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   const goHome = () => navigate(Path.Home);
   const goChat = () => navigate(Path.Chat);
-  const resetAccessCode = () => {
-    access.updateEmail("");
-    access.updatePassword("");
-  }; // Reset
 
   const resetErrorStatus = () => {
     setError("");
@@ -33,21 +31,18 @@ export function LoginPage() {
   const handleLogin = async () => {
     resetErrorStatus();
     try {
-      const loginStatus = await access.signInWithFirebase(
-        access.email,
-        access.password,
-      );
-      if (loginStatus == 1) {
-        console.log("Sign-in Success! email: ", access.email);
-        goChat();
-      } else if (loginStatus == 2) {
-        setError(
-          `${access.email} has not be verified. Please check your email.`,
-        );
-        setcanResendVerification(true);
-        // resetAccessCode();
-        return;
-      }
+      await access
+        .signInWithFirebase(email, password)
+        .then((loginStatus: number) => {
+          if (loginStatus == 1) {
+            console.log("Sign-in Success! email: ", email);
+            goChat();
+          } else if (loginStatus == 2) {
+            setError(`${email} has not be verified. Please check your email.`);
+            setcanResendVerification(true);
+            return;
+          }
+        });
     } catch (err) {
       setError("Sign-in Failed. Please check your email and password.");
     }
@@ -55,7 +50,7 @@ export function LoginPage() {
 
   const handleResend = async () => {
     await access
-      .resendVerificationEmailFromFirebase(access.email, access.password)
+      .resendVerificationEmailFromFirebase(email, password)
       .then(() => {
         console.log("return from resendVerificationEmailFromFirebase");
       });
@@ -65,13 +60,9 @@ export function LoginPage() {
     if (getClientConfig()?.isApp) {
       navigate(Path.Settings);
     }
-
-    const listenerTimer = setTimeout(() => {
-      if (access.isAuthorized()) {
-        navigate(Path.UserPage);
-      }
-    }, 1000);
-    return () => clearTimeout(listenerTimer);
+    if (access.isAuthorized()) {
+      navigate(Path.UserPage);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -97,10 +88,10 @@ export function LoginPage() {
           className={styles["auth-input"]}
           type="text"
           placeholder="email"
-          value={access.email}
+          value={email}
           onChange={(e) => {
             resetErrorStatus();
-            access.updateEmail(e.currentTarget.value);
+            setEmail(e.currentTarget.value);
           }}
         />
 
@@ -109,10 +100,10 @@ export function LoginPage() {
           className={styles["auth-input"]}
           type="password"
           placeholder="password"
-          value={access.password}
+          value={password}
           onChange={(e) => {
             resetErrorStatus();
-            access.updatePassword(e.currentTarget.value);
+            setPassword(e.currentTarget.value);
           }}
         />
 
@@ -135,7 +126,6 @@ export function LoginPage() {
           <IconButton
             text={Locale.Auth.Later}
             onClick={() => {
-              resetAccessCode();
               goHome();
             }}
           />

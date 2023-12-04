@@ -71,7 +71,7 @@ export const useFirebaseListenerStore = createPersistStore(
       const eventHandler = (snapshot: DataSnapshot) => {
         callback(snapshot);
       };
-      console.log("Attaching listener for:", eventType);
+      //   console.log("Attaching listener for:", eventType);
       switch (eventType) {
         case "child_added":
           onChildAdded(databaseRef, eventHandler);
@@ -163,7 +163,7 @@ export const useFirebaseListenerStore = createPersistStore(
           console.warn("Unsupported event type");
           return;
       }
-      console.log(`Listener detached for ${eventType}`);
+      //   console.log(`Listener detached for ${eventType}`);
     },
   }),
   {
@@ -332,6 +332,8 @@ export async function firebaseListenerSetup() {
   useFirebaseListenerStore
     .getState()
     .attachListener(userPath, "child_removed", handleChildRemoved);
+
+  console.log(`All Listeners Attached.`);
 }
 
 export function firebaseListenerTeardown() {
@@ -344,4 +346,5 @@ export function firebaseListenerTeardown() {
     const userPath = "user_" + userAuthStore.getState().uid;
     useFirebaseListenerStore.getState().detachListener(userPath, eventType);
   });
+  console.log(`All Listeners Detached.`);
 }

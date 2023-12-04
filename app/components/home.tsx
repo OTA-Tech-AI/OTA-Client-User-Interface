@@ -16,7 +16,7 @@ import { Path, SlotID } from "../constant";
 import { ErrorBoundary } from "./error";
 
 import { getISOLang, getLang } from "../locales";
-import { initializeFirebase, firebaseListenerSetup } from "../firebase-helper";
+import { initializeFirebase } from "../firebase-helper";
 
 import {
   HashRouter as Router,
@@ -262,11 +262,9 @@ export function Home() {
     console.log("[Config] got config from build time", getClientConfig());
     useAccessStore.getState().fetch();
     initializeFirebase();
+    const unsubscribe = userAuthStore.getState().setupAuthStateListener();
 
-    const listenerTimer = setTimeout(() => {
-      firebaseListenerSetup();
-    }, 3000);
-    return () => clearTimeout(listenerTimer);
+    return () => unsubscribe();
   }, []);
 
   if (!useHasHydrated()) {

@@ -1,13 +1,12 @@
 import styles from "./passwordRecovery.module.scss";
 import { IconButton } from "../button";
 
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Path } from "../../constant";
 import Locale from "../../locales";
 
 import BotIcon from "../../icons/bot.svg";
-import { useEffect, useState } from "react";
-import { getClientConfig } from "../../config/client";
+import { useState } from "react";
 import { userAuthStore } from "../../store/userAuth";
 import { ResendCodeButton } from "./resendButton";
 
@@ -41,20 +40,6 @@ export function PasswordRecoveryPage() {
       setError("We can't identify your email. Please check it again.");
     }
   };
-
-  useEffect(() => {
-    if (getClientConfig()?.isApp) {
-      navigate(Path.Settings);
-    }
-
-    const listenerTimer = setTimeout(() => {
-      if (access.isAuthorized()) {
-        navigate(Path.UserPage);
-      }
-    }, 1000);
-    return () => clearTimeout(listenerTimer);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   return (
     <>
