@@ -48,6 +48,10 @@ export function RegisterAccountsPage() {
       setError("9 digits inivation code required.");
       return;
     }
+    if (!(await access.verifyInvitationCode(invitationCode))) {
+      setError("Invitation Code is not correct.");
+      return;
+    }
     try {
       await access.signUpWithFireBase(email, password).then(() => {
         setRegistered(true);

@@ -7,6 +7,16 @@ import {
   createUserWithEmailAndPassword,
   sendPasswordResetEmail,
 } from "firebase/auth";
+import { getApp } from "firebase/app";
+import {
+  collection,
+  query,
+  where,
+  getDocs,
+  getFirestore,
+  doc,
+  getDoc,
+} from "firebase/firestore";
 import { DEFAULT_API_HOST, StoreKey } from "../constant";
 import { getClientConfig } from "../config/client";
 import { createPersistStore } from "../utils/store";
@@ -127,6 +137,28 @@ export const userAuthStore = createPersistStore(
       } catch (error) {
         console.error("Error: ", error);
         // Handle errors (e.g., user not found, wrong password, etc.)
+      }
+    },
+
+    async verifyInvitationCode(code: string): Promise<boolean> {
+      const app = getApp();
+      const db = getFirestore(app);
+      const invitationCodeDocRef = doc(
+        db,
+        "OTAUserSystemStorage",
+        "PublicData",
+      );
+      try {
+        const docSnap = await getDoc(invitationCodeDocRef);
+
+        if (docSnap.exists() && docSnap.data().invitationCode) {
+          return docSnap.data().invitationCode == code;
+        } else {
+          return false;
+        }
+      } catch (error) {
+        console.error("Error checking invitation code:", error);
+        return false;
       }
     },
 
