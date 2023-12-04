@@ -43,7 +43,8 @@ export const DEFAULT_CONFIG = {
   apiKey: "esecret_hpbtup4hhe4rha63h2ibh2mich",
 
   modelConfig: {
-    model: "meta-llama/Llama-2-70b-chat-hf" as ModelType,
+    // model: "meta-llama/Llama-2-70b-chat-hf" as ModelType,
+    model: "HuggingFaceH4/zephyr-7b-beta" as ModelType,
     temperature: 0.5,
     top_p: 1,
     max_tokens: 2000,
