@@ -131,7 +131,9 @@ export const useAppConfig = createPersistStore(
         .customModels.split(",")
         .filter((v) => !!v && v.length > 0)
         .map((m) => ({ name: m, available: true }));
-      return get().models.concat(customModels);
+      return get()
+        .models.filter((v) => v.name !== "ACTION MODE")
+        .concat(customModels);
     },
   }),
   {
