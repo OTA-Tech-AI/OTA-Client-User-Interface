@@ -1,4 +1,5 @@
 {
   "extends": "next/core-web-vitals",
-  "plugins": ["prettier"]
+  "plugins": ["prettier"],
+  "rules": { "react/no-unescaped-entities": 0 }
 }
