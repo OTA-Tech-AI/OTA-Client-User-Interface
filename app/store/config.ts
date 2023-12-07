@@ -44,7 +44,7 @@ export const DEFAULT_CONFIG = {
 
   modelConfig: {
     // model: "meta-llama/Llama-2-70b-chat-hf" as ModelType,
-    model: "HuggingFaceH4/zephyr-7b-beta" as ModelType,
+    model: "CHAT MODE" as ModelType,
     temperature: 0.5,
     top_p: 1,
     max_tokens: 2000,

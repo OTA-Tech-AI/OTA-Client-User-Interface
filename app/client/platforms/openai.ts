@@ -87,13 +87,14 @@ export class ChatGPTApi implements LLMApi {
     options.onController?.(controller);
 
     console.log("[Request] openai payload: ", requestPayload);
-    if (requestPayload.model === "OTA_ACTION") {
+    if (requestPayload.model === "ACTION MODE") {
       useAccessStore.getState().openaiUrl = "http://localhost:5000";
-      console.log("success");
+      console.log("action mode");
     } else {
+      requestPayload.model = "mistralai/Mistral-7B-Instruct-v0.1";
       useAccessStore.getState().openaiUrl =
         "https://api.endpoints.anyscale.com";
-      console.log("llama");
+      console.log("chat mode");
     }
 
     try {
@@ -112,7 +113,7 @@ export class ChatGPTApi implements LLMApi {
         REQUEST_TIMEOUT_MS,
       );
       // enter when 1. in chatmode OR  2. is the receiver (pc host)
-      if (!(requestPayload.model === "OTA_ACTION") || IS_RECEIVER) {
+      if (!(requestPayload.model === "ACTION MODE") || IS_RECEIVER) {
         let responseText = "";
         let finished = false;
 

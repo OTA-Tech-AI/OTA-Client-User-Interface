@@ -1134,7 +1134,7 @@ function _Chat() {
                 <div className={styles["chat-message-container"]}>
                   <div className={styles["chat-message-header"]}>
                     <div className={styles["chat-message-avatar"]}>
-                      {/* <div className={styles["chat-message-edit"]}>
+                      <div className={styles["chat-message-edit"]}>
                         <IconButton
                           icon={<EditIcon />}
                           onClick={async () => {
@@ -1153,7 +1153,7 @@ function _Chat() {
                             });
                           }}
                         ></IconButton>
-                      </div> */}
+                      </div>
                       {isUser ? (
                         <Avatar avatar={config.avatar} />
                       ) : (
@@ -1178,17 +1178,17 @@ function _Chat() {
                             />
                           ) : (
                             <>
-                              {/* <ChatAction
+                              <ChatAction
                                 text={Locale.Chat.Actions.Retry}
                                 icon={<ResetIcon />}
                                 onClick={() => onResend(message)}
-                              /> */}
+                              />
 
-                              {/* <ChatAction
+                              <ChatAction
                                 text={Locale.Chat.Actions.Delete}
                                 icon={<DeleteIcon />}
                                 onClick={() => onDelete(message.id ?? i)}
-                              /> */}
+                              />
 
                               {/* <ChatAction
                                 text={Locale.Chat.Actions.Pin}

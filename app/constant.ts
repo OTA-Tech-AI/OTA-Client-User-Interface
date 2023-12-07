@@ -81,17 +81,15 @@ Knowledge cutoff: 2021-09
 Current model: {{model}}
 Current time: {{time}}`;
 
-// export const SUMMARIZE_MODEL = "meta-llama/Llama-2-70b-chat-hf";
-export const SUMMARIZE_MODEL = "HuggingFaceH4/zephyr-7b-beta";
+export const SUMMARIZE_MODEL = "CHAT";
 
 export const DEFAULT_MODELS = [
   {
-    name: "OTA_ACTION",
+    name: "ACTION MODE",
     available: true,
   },
   {
-    // name: "meta-llama/Llama-2-70b-chat-hf",
-    name: "HuggingFaceH4/zephyr-7b-beta",
+    name: "CHAT MODE",
     available: true,
   },
 ] as const;
