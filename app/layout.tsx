@@ -6,7 +6,7 @@ import { getClientConfig } from "./config/client";
 import { type Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "OTA DEMO",
+  title: "OTA: Your AI Assistant Everyday",
   description: "First AI that can Interact with World",
   viewport: {
     width: "device-width",
@@ -18,7 +18,7 @@ export const metadata: Metadata = {
     { media: "(prefers-color-scheme: dark)", color: "#151515" },
   ],
   appleWebApp: {
-    title: "OTA DEMO",
+    title: "OTA: Your AI Assistant Everyday",
     statusBarStyle: "default",
   },
 };

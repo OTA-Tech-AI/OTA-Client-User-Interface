@@ -4,6 +4,9 @@ import {
   OpenaiPath,
   REQUEST_TIMEOUT_MS,
   IS_RECEIVER,
+  CHAT_MODE_ANYSCALE_MODEL,
+  ACTION_MODE_PORT,
+  CHAT_MODE_URL,
 } from "@/app/constant";
 import { useAccessStore, useAppConfig, useChatStore } from "@/app/store";
 
@@ -88,12 +91,11 @@ export class ChatGPTApi implements LLMApi {
 
     console.log("[Request] openai payload: ", requestPayload);
     if (requestPayload.model === "ACTION MODE") {
-      useAccessStore.getState().openaiUrl = "http://localhost:5000";
+      useAccessStore.getState().openaiUrl = ACTION_MODE_PORT;
       console.log("action mode");
     } else {
-      requestPayload.model = "mistralai/Mistral-7B-Instruct-v0.1";
-      useAccessStore.getState().openaiUrl =
-        "https://api.endpoints.anyscale.com";
+      requestPayload.model = CHAT_MODE_ANYSCALE_MODEL;
+      useAccessStore.getState().openaiUrl = CHAT_MODE_URL;
       console.log("chat mode");
     }
 
@@ -194,7 +196,7 @@ export class ChatGPTApi implements LLMApi {
           },
           openWhenHidden: true,
         });
-        // enter when 1. in action mode  AND  2. is the receiver (pc host)
+        // enter when 1. in ACTION MODE  AND  2. is the receiver (pc host)
       } else {
         // const res = await fetch(chatPath, chatPayload);
         // clearTimeout(requestTimeoutId);

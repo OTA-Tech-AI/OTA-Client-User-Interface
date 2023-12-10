@@ -63,7 +63,7 @@ export const UNFINISHED_INPUT = (id: string) => "unfinished-input-" + id;
 
 export const STORAGE_KEY = "OTA";
 
-export const REQUEST_TIMEOUT_MS = 60000;
+export const REQUEST_TIMEOUT_MS = 180 * 1000;
 
 export const EXPORT_MESSAGE_CLASS_NAME = "export-markdown";
 
@@ -93,6 +93,10 @@ export const DEFAULT_MODELS = [
     available: true,
   },
 ] as const;
+
+export const CHAT_MODE_URL = "https://api.endpoints.anyscale.com";
+export const CHAT_MODE_ANYSCALE_MODEL = "mistralai/Mistral-7B-Instruct-v0.1";
+export const ACTION_MODE_PORT = "http://localhost:5000";
 
 export const CHAT_PAGE_SIZE = 15;
 export const MAX_RENDER_MSG_COUNT = 45;
